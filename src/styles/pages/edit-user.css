@@ -1,0 +1,82 @@
+#edit-user-title {
+    margin-top: 14.9vh;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 38.19px;
+}
+
+#edit-user-form {
+    width: 355px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    margin-top: 1.1vh;
+}
+
+
+#email-text {
+    margin-top: 3.3vh;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 17.9px;
+}
+
+#email {
+    margin-top: 1.4vh;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.71px;
+}
+
+
+#user-edit-btn {
+    margin-top: 1.1vh;
+    width: 355px;
+    height: 33px;
+    background-color: #ACA0EB;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.71px;
+
+    cursor: pointer;
+
+    transition: all 0.5s;
+}
+
+#user-delete-btn {
+    width: 65px;
+    padding: 0;
+    height: 17px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16.71px;
+    margin-top: 1.1vh;
+    border: none;
+    background-color: #F4F5F7;
+    cursor: pointer;
+}
+    
+
+#edit-complete-btn {
+    margin-top: calc(5.9vh + 30vh);
+    width: 102px;
+    height: 46px;
+    border-radius: 30px;
+    background-color: #7F6AEE;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 21.6px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+
+    transition: all 0.5s ease-in-out; 
+
+}

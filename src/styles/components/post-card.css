@@ -1,0 +1,112 @@
+.post-box {
+    width: 592px;
+    height: 169px;
+
+    margin-top: 1.4vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+    border-radius: 16px;
+    filter: drop-shadow(3px 4px 4px rgba(204, 204, 204, 0.25));
+
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+.post-box:hover {
+    transform: scale(1.05); 
+}
+
+
+.up-post {
+    width: 592px;
+    height: 101px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.post-title {
+    margin-top: 18px;
+    margin-left: 24px;
+
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 31.2px;
+}
+
+.post-log-box {
+    margin-top: 10px;
+    margin-left: 24px;
+    margin-right: 24px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.like {
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.comment {
+    font-weight: 400;
+    font-size: 14px;
+
+    margin-left: 10px;
+}
+
+.hits {
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.time {
+    margin-left: 403px;
+
+    position: absolute;
+
+    font-weight: 400;
+    font-size: 14px;
+}
+
+
+
+.line1 {
+    width: 592px;
+    height: 0px;
+
+    color: #000;
+    opacity: 16%;
+}
+
+
+
+.down-post {
+    width: 592px;
+    height: 68px;
+
+    margin-left: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.profile-image {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+    border: none;
+}
+
+.writer {
+    margin-left: 10px;
+    
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 19.5px;
+}

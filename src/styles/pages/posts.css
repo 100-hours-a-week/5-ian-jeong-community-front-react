@@ -1,0 +1,56 @@
+
+#main {
+    width: 592px;
+
+    margin-top: 3.7vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#welcome-text {
+    text-align: center;
+
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 31.2px;
+}
+
+
+
+
+#add-btn-box {
+    width: 592px;
+
+    margin-top: 2.2vh;
+    margin-bottom: 0.7vh;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+}
+
+#add-btn {
+    width: 138px;
+    height: 39px;
+
+    border-radius: 16px;
+    background-color: #ACA0EB;
+    border: none;
+
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 25.04px;
+    color: white;
+
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+#add-btn:hover {
+    background-color: #7F6AEE;
+
+    transform: scale(1.05); 
+}

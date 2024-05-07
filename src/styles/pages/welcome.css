@@ -1,0 +1,50 @@
+html {
+    width: 100%;
+    /* height: 100%; */
+}
+
+body {
+    width: 100%;
+    /* height: 100%; */
+
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #F4F5F7;
+}
+
+#welcome-padding {
+    height: 35%;
+}
+
+#welcome-btn {
+    width: 400px;
+    height: 150px;
+
+    box-shadow: 0px 20px 0px 0px #ACA0EB;
+    transition: all 0.2s;
+
+
+    border: 1px solid #000000;
+    border-radius: 30px;
+    
+    color: white;
+    font-weight: 700;
+    font-size: 50px;
+
+    background-color: #7F6AEE;
+
+    cursor: pointer;
+}
+
+#welcome-btn:hover {
+    margin-top: 38px;
+    
+    font-size: 45px;
+    
+    box-shadow: 0px 0px 0px 0px #ACA0EB;
+}

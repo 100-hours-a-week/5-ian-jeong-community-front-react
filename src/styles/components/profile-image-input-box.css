@@ -1,0 +1,71 @@
+#profile-image-input-text {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 17.9px;
+}
+
+
+
+#profile-image-input-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 355px;
+}
+
+
+#profile-image-input {
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    filter: opacity(0%);
+    cursor: pointer;
+    z-index: 1;
+    border: none;
+    opacity: 1;
+    border:1px solid #000000;
+}
+
+
+#image-edit-btn {
+    position: absolute;
+    width: 52px;
+    height: 27px;
+    border-radius: 25px;
+    border: 1px solid white;
+    color: white;
+    background-color: transparent;
+    z-index: 1;
+}
+
+#cross-col {
+    width: 1px;
+    height: 24px;
+
+    position: absolute;
+    background-color: #000;
+    z-index: 1;
+}
+
+#cross-row {
+    width: 24px;
+    height: 1px;
+
+    position: absolute;
+    background-color: #000;
+    z-index: 1;
+}
+
+#profile-image-preview {
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: #C4C4C4;
+}
+
+
+
+

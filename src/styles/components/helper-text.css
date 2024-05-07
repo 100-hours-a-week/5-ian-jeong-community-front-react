@@ -1,0 +1,10 @@
+.helper-text {
+    margin-top: 0.3vh;
+
+    color: #FF0000;
+    
+    font-weight: 400;
+    font-size: 12px;
+
+    /* visibility: hidden; */
+}

@@ -1,0 +1,81 @@
+.comment {
+    width: 544px;
+    margin-top: 21px;
+    display: flex;
+    flex-direction: row;
+}
+
+.comment-writer-box {
+    width: 424px;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-writer {
+    width: 424px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.comment-writer-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.comment-writer-nickname {
+    width: 79px;
+    height: 20px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 19.5px;
+    margin-left: 10px;
+}
+
+.comment-writer-time {
+    width: 133px;
+    height: 18px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18.2px;
+    margin-left: 24px;
+}
+
+.comment-content {
+    margin-top: 8px;
+    margin-left: 46px;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21.15px;
+    border:none;
+    background-color: #F4F5F7;
+}
+
+
+.comment-btn-box {
+    width: 120px;
+}
+
+.comment-edit-btn {
+    margin-top: 21px;
+    margin-left: 24px;
+    background-color: #F4F5F7;
+    border: none;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 23.48px;
+
+    cursor: pointer;
+}
+
+.comment-delete-btn {
+    margin-top: 21px;
+    background-color: #F4F5F7;
+    border: none;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 23.48px;
+
+    cursor: pointer;
+}
