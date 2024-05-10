@@ -5,8 +5,7 @@ import patric from "../assets/patric.jpg";
 import "../styles/components/header.css";
 
 const Header = (props) => {
-    const backBtnVisibility = props.backBtnVisibility;
-    const profileImageVisibility = props.profileImageVisibility;
+    const { backBtnVisibility, profileImageVisibility } = props;
 
     return (
         <>
