@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import PageTitle from "../components/PageTitle";
+import VerticalPadding from "../components/VerticlaPadding";
 import TextInput from "../components/TextInput";
 import HelperText from "../components/HelperText";
 
@@ -12,6 +13,7 @@ const SignIn = () => {
     return (
         <>
             <Header backBtnVisibility="hidden" profileImageVisibility="hidden"></Header>
+            <VerticalPadding marginTop="24.66vh"></VerticalPadding>
             <PageTitle text="로그인"></PageTitle>
 
             <div id="sign-in-form">
