@@ -1,21 +1,9 @@
-#page-title {
-    font-weight: 400;
-    font-size: 32px;
-    line-height: 32px;
-}
-
-
-
 #sign-in-form-title {
     font-weight: 700;
     font-size: 32px;
     line-height: 38.19px;
 
     margin-top: 24.66vh;    
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 
