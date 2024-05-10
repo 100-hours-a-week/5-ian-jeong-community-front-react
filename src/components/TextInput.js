@@ -1,3 +1,4 @@
+import placeholderMessage from "../constants/placeholder";
 import "./../styles/components/text-input.css";
 
 // 이메일 비번, 비번확인, 닉네임 입력을 다뤄야 함
@@ -19,7 +20,7 @@ const TextInput = (props) => {
             labelText = '이메일';
         }
 
-        placeholder = '이메일을 입력하세요';
+        placeholder = placeholderMessage.EMAIL_INPUT;
 
     } else if(type == 'password') {
         type = 'password';
@@ -31,7 +32,7 @@ const TextInput = (props) => {
             labelText = '비밀번호';
         }
 
-        placeholder = '비밀번호를 입력하세요';
+        placeholder = placeholderMessage.PASSWORD_INPUT;
 
     } else if(type == 'repassword') {
         type = 'password';
@@ -43,7 +44,7 @@ const TextInput = (props) => {
             labelText = '비밀번호 확인';
         }
 
-        placeholder = '비밀번호를 한번 더 입력하세요';
+        placeholder = placeholderMessage.REPASSWORD_INPUT;
     } else {
         type = 'text';
         id = 'nickname-input';
@@ -54,7 +55,7 @@ const TextInput = (props) => {
             labelText = '닉네임';
         }
 
-        placeholder = '닉네임을 입력하세요';
+        placeholder = placeholderMessage.NICKNAME_INPUT;
     }
 
 
