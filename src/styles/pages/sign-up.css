@@ -13,52 +13,9 @@
     margin-top: 1.1vh;
 }
 
-
-
-/* 
-#profile-circle {
-    width: 149px;
-    height: 149px;
-
-    border-radius: 50%;
-    border: none;
-
-    opacity: 0;
-    z-index: 1;
-    cursor: pointer;
-} */
-
-
-/* #cross-col {
-    width: 1px;
-    height: 24px;
-
-    position: absolute;
-    background-color: #000;
-}
-
-#cross-row {
-    width: 24px;
-    height: 1px;
-
-    position: absolute;
-    background-color: #000;
-}
-
-#preview {
-    width: 149px;
-    height: 149px;
-
-    border-radius: 50%;
-    position: absolute;
-} */
-
-
 #sign-up-padding {
     height: 2.8vh;
 }
-
-
 
 #sign-up-btn {
     width: 355px;
