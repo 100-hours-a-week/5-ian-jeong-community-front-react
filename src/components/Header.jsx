@@ -5,7 +5,9 @@ import patric from "../assets/patric.jpg";
 import "../styles/components/header.css";
 
 const Header = (props) => {
-    const { backBtnVisibility, profileImageVisibility } = props;
+    const {backBtnVisibility, profileImageVisibility, navigateToPreviousPage} = props;
+
+    
 
     return (
         <>
@@ -13,7 +15,7 @@ const Header = (props) => {
                 <div id="header-title-text">아무 말 대잔치</div>
                 <div id="header-box">
 
-                    <img id="back-btn" src={arrow} alt="back" style={{visibility: backBtnVisibility}}></img>
+                    <img id="back-btn" src={arrow} alt="back" style={{visibility: backBtnVisibility}} onClick={navigateToPreviousPage}></img>
                     <img id="profile-image-btn" src={patric} alt="profile-image" style={{visibility: profileImageVisibility}}></img>
 
                     <div id="drop-down-box">

@@ -5,8 +5,7 @@ import "./../styles/components/text-input.css";
 
 const TextInput = (props) => {
     let type = props.type;
-    const inputValueRef = props.inputValueRef;
-    const flag = props.flag;
+    const {validateInput, flag} = props;
 
     let id;
     let labelText;
@@ -68,9 +67,8 @@ const TextInput = (props) => {
                 type={type} 
                 id={id} 
                 className="text-input" 
-                name={type} 
                 placeholder={placeholder}
-                onInput={(e) => {inputValueRef.current = e.target.value}}
+                onInput={(e) => validateInput(e)}
             >
 
             </input>

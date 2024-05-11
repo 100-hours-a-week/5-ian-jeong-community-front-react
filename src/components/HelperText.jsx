@@ -2,16 +2,20 @@ import React from "react";
 import "./../styles/components/helper-text.css";
 
 const HelperText = (props) => {
-    const visibility = props.visibility;
-    const helperText = props.helperText;
+    const {visibility, text, color} = props;
+    const style = {
+        visibility: visibility,
+        text: text,
+        color: color,
+    }
 
     return (
         <>
             <div 
                 className="helper-text"
-                style={{visibility: visibility}}
+                style={style}
             >
-                {helperText}
+                {text}
             </div>
         </>
     );

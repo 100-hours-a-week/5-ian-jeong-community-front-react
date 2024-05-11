@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import Header from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import VerticalPadding from "../components/VerticlaPadding";
 import TextInput from "../components/TextInput";
 import HelperText from "../components/HelperText";
-import { useNavigate } from 'react-router-dom';
 
 import "../styles/pages/sign-in.css";
 
@@ -21,6 +21,14 @@ const SignIn = () => {
     const navigateToSignUp = () => {
         navigate("/users/sign-up");
     };
+
+    const updateEmailInput = (e) => {
+        email.current = e.target.value;
+    }
+
+    const updatePasswordInput = (e) => {
+        password.current = e.target.value;
+    }
 
     const validateEmailFormat = (email) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -86,11 +94,11 @@ const SignIn = () => {
             <PageTitle text="로그인"></PageTitle>
 
             <div id="sign-in-input-box">
-                <TextInput type="email" inputValueRef={email}></TextInput>
-                <TextInput type="password" inputValueRef={password}></TextInput>
+                <TextInput type="email" inputValue={email} validateInput={updateEmailInput}></TextInput>
+                <TextInput type="password" inputValue={password} validateInput={updatePasswordInput}></TextInput>
+                <HelperText visibility={visibility} text={helperText} color={"#FF0000"}></HelperText>
             </div>
 
-            <HelperText visibility={visibility} helperText={helperText}></HelperText>
 
             <button id="sign-in-btn" onClick={validateSignIn}>로그인</button>
             <button id="move-sign-up-btn" onClick={navigateToSignUp}>회원가입</button>
