@@ -16,7 +16,8 @@ const AddPost = () => {
     const content = useRef("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
-    const [postImageInput, setPostImageInput] = useState(""); 
+    
+    const postImageInput = useRef(""); 
     const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
 
     const navigate = useNavigate();
@@ -59,7 +60,7 @@ const AddPost = () => {
             const reader = new FileReader();
             
             reader.onload = function(e) { 
-                setPostImageInput(e.target.result);
+                postImageInput.current = e.target.result;
             }
             reader.readAsDataURL(file); 
             
@@ -67,7 +68,7 @@ const AddPost = () => {
             return;
         } 
         
-        setPostImageInput("");
+        postImageInput.current = "";
     }
     
     const validatePost = (e) => {
@@ -108,7 +109,7 @@ const AddPost = () => {
                         color={'#FF0000'}
                     ></HelperText>
                     <PostImageInput 
-                        postImageInput={postImageInput}
+                        postImageInput={postImageInput.current}
                         addImageFunc={addImage}>
                     </PostImageInput>
                 </div>
