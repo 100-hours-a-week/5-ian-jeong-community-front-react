@@ -80,13 +80,7 @@ const SignIn = () => {
     }
 
 
-
-
-
-
-
-
-
+    
     return (
         <>
             <Header backBtnVisibility="hidden" profileImageVisibility="hidden"></Header>

@@ -2,7 +2,15 @@ import React from "react";
 import "./../styles/components/page-title.css";
 
 const PageTitle = (props) => {
-    const text = props.text;
+    const {text, flag} = props;
+
+    if(flag) {
+        return (
+            <div id="welcome-text">안녕하세요,<br/>
+            아무말 대잔치 <strong>게시판</strong> 입니다.
+            </div>
+        )
+    }
 
     return (
         <>

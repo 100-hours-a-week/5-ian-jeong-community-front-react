@@ -12,7 +12,7 @@ import "../styles/pages/sign-up.css";
 
 
 const SignUp = () => {
-    const [profileHelperTextVisibility, setProfileHelperTextVisibility] = useState('visible')
+    const [profileHelperTextVisibility, setProfileHelperTextVisibility] = useState('visible');
     const [profileHelperText, setProfileHelperText] = useState("*프로필 사진을 추가해주세요");
     const [profileImage, setProfileImage] = useState("");
     const [profileOpacity, setProfileOpacity] = useState(1);
@@ -43,8 +43,8 @@ const SignUp = () => {
 
     const isCorrectEmail = useRef(false);
     const isCorrectPassword = useRef(false);
-    const isCorrectRePassword = useRef(false);;
-    const isCorrectNickname = useRef(false);;
+    const isCorrectRePassword = useRef(false);
+    const isCorrectNickname = useRef(false);
 
 
 
@@ -151,7 +151,7 @@ const SignUp = () => {
         // validateAll();
     }
     
-    function validatePasswordFormat(password) {
+    const validatePasswordFormat = (password) => {
         const passwordRegax = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
         return passwordRegax.test(password);
     }
@@ -183,7 +183,7 @@ const SignUp = () => {
         // validateAll();
     }
 
-    function validatePasswordDouble(rePasswordCurrentValue) {
+    const validatePasswordDouble = (rePasswordCurrentValue) => {
         return password.current === rePasswordCurrentValue;
     }
 
