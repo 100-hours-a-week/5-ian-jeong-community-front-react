@@ -1,4 +1,4 @@
-#image-input-text {
+#post-image-input-text {
     margin-top: 0.8vh;
     font-weight: 700;
     font-size: 15px;
@@ -7,5 +7,9 @@
 
 #post-image-input {
     margin-top: 0.7vh;
+}
+
+#post-image-preview {
+    display: none;
 }
 

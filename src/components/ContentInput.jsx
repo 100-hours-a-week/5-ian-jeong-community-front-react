@@ -3,11 +3,17 @@ import placeholderMessage from "../constants/placeholder";
 import "../styles/components/content-input.css";
 
 const ContentInput = (props) => {
+    const {validateInput} = props;
 
     return (
         <>
             <div id="content-input-text">내용*</div>
-            <textarea id="content-input" type="text" name="post" placeholder={placeholderMessage.CONTENT_INPUT}></textarea>
+            <textarea 
+                id="content-input" 
+                type="text" 
+                placeholder={placeholderMessage.CONTENT_INPUT} 
+                onInput={(e) => validateInput(e)}>
+            </textarea>
         </>
     );
 }

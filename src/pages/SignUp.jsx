@@ -243,7 +243,7 @@ const SignUp = () => {
             </Header>
 
             <VerticalPadding marginTop="10.9vh"></VerticalPadding>
-            <PageTitle text="회원가입"></PageTitle>
+            <PageTitle text="회원가입" fontSize="32px"></PageTitle>
 
             <div id="sign-up-input-box">
                 <ProfileImageInputBox 

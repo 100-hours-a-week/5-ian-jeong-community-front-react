@@ -80,12 +80,12 @@ const SignIn = () => {
     }
 
 
-    
+
     return (
         <>
             <Header backBtnVisibility="hidden" profileImageVisibility="hidden"></Header>
             <VerticalPadding marginTop="24.66vh"></VerticalPadding>
-            <PageTitle text="로그인"></PageTitle>
+            <PageTitle text="로그인" fontSize="32px"></PageTitle>
 
             <div id="sign-in-input-box">
                 <TextInput type="email" inputValue={email} validateInput={updateEmailInput}></TextInput>

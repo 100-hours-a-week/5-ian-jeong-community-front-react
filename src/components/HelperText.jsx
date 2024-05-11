@@ -5,7 +5,6 @@ const HelperText = (props) => {
     const {visibility, text, color} = props;
     const style = {
         visibility: visibility,
-        text: text,
         color: color,
     }
 

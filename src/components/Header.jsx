@@ -7,7 +7,6 @@ import "../styles/components/header.css";
 
 const Header = (props) => {
     const {backBtnVisibility, profileImageVisibility, navigateToPreviousPage} = props;
-    // 모든 헤더 공통기능이니까 헤더에다가 상태관리 ㄱㄱ
     const [dropBoxVisibility, setDropBoxVisibility] = useState('hidden');
 
     const navigate = useNavigate();

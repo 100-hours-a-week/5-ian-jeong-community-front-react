@@ -2,7 +2,7 @@ import React from "react";
 import "./../styles/components/page-title.css";
 
 const PageTitle = (props) => {
-    const {text, flag} = props;
+    const {text, fontSize, flag} = props;
 
     if(flag) {
         return (
@@ -14,7 +14,7 @@ const PageTitle = (props) => {
 
     return (
         <>
-           <div id="page-title">{text}</div>
+           <div id="page-title" style={{fontSize: fontSize}}>{text}</div>
         </>
     );
 }
