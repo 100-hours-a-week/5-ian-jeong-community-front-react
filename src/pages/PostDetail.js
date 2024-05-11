@@ -1,7 +1,7 @@
 import React from "react";
-import Header from "../components/Header.js";
-import Comment from "../components/Comment.js";
-import Modal from "../components/Modal.js";
+import Header from "../components/Header";
+import Comment from "../components/Comment";
+import Modal from "../components/Modal";
 import elephant from "../assets/elephant.png";
 
 

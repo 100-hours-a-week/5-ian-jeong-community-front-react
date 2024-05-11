@@ -1,7 +1,7 @@
 import React from "react";
-import Header from "../components/Header.js";
-import TextInput from "../components/TextInput.js";
-import HelperText from "../components/HelperText.js";
+import Header from "../components/Header";
+import TextInput from "../components/TextInput";
+import HelperText from "../components/HelperText";
 
 
 import "../styles/pages/edit-password.css";

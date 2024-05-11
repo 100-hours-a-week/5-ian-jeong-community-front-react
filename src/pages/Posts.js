@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../components/Header.js";
-import PostCard from "../components/PostCard.js";
+import Header from "../components/Header";
+import PostCard from "../components/PostCard";
 
 import "../styles/pages/posts.css";
 

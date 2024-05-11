@@ -1,9 +1,9 @@
 import React from "react";
-import Header from "../components/Header.js";
-import HelperText from "../components/HelperText.js";
-import TextInput from "../components/TextInput.js";
-import Modal from "../components/Modal.js";
-import ProfileImageInputBox from "../components/ProfileImageInputBox.js";
+import Header from "../components/Header";
+import HelperText from "../components/HelperText";
+import TextInput from "../components/TextInput";
+import Modal from "../components/Modal";
+import ProfileImageInputBox from "../components/ProfileImageInputBox";
 
 import "../styles/pages/edit-user.css";
 

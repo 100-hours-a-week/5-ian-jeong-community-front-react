@@ -1,9 +1,9 @@
 import React from "react";
-import Header from "../components/Header.js";
-import HelperText from "../components/HelperText.js";
-import TitleInput from "../components/TitleInput.js";
-import ContentInput from "../components/ContentInput.js";
-import PostImageInput from "../components/PostImageInput.js";
+import Header from "../components/Header";
+import HelperText from "../components/HelperText";
+import TitleInput from "../components/TitleInput";
+import ContentInput from "../components/ContentInput";
+import PostImageInput from "../components/PostImageInput";
 
 import "../styles/pages/add-post.css";
 

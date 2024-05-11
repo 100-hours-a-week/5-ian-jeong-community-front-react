@@ -1,9 +1,11 @@
 import placeholderMessage from "../constants/placeholder";
 import "./../styles/components/text-input.css";
 
-// 이메일 비번, 비번확인, 닉네임 입력을 다뤄야 함
+
+
 const TextInput = (props) => {
     let type = props.type;
+    const inputValueRef = props.inputValueRef;
     const flag = props.flag;
 
     let id;
@@ -62,7 +64,16 @@ const TextInput = (props) => {
     return (
         <>
             <label for={id} className="input-label-text">{labelText}</label>
-            <input type={type} id={id} className="text-input" name={type} placeholder={placeholder}></input>
+            <input 
+                type={type} 
+                id={id} 
+                className="text-input" 
+                name={type} 
+                placeholder={placeholder}
+                onInput={(e) => {inputValueRef.current = e.target.value}}
+            >
+
+            </input>
         </>
     );
 }
