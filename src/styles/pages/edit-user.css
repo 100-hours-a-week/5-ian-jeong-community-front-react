@@ -1,17 +1,8 @@
-#edit-user-title {
-    margin-top: 14.9vh;
-    font-weight: 700;
-    font-size: 32px;
-    line-height: 38.19px;
-}
-
-#edit-user-form {
+#edit-user-box {
     width: 355px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    margin-top: 1.1vh;
 }
 
 

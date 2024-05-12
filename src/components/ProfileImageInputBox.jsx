@@ -10,7 +10,7 @@ const ProfileImageInputBox = (props) => {
         return (
             <>
                 <label id="profile-image-input-text" for="profile-image-input">프로필 사진</label>
-                <HelperText visibility={profileHelperTextVisibility} text={profileHelperText}></HelperText>
+                <HelperText visibility={profileHelperTextVisibility} text={profileHelperText} color={"#FF0000"}></HelperText>
                             
                     <div id="profile-image-input-box">
                         <input 
@@ -33,9 +33,14 @@ const ProfileImageInputBox = (props) => {
                 <label id="profile-image-input-text" for="profile-image-input">프로필 사진</label>
                         
                     <div id="profile-image-input-box">
-                        <input type="file" id="profile-image-input" accept="image/*" name="profileImage"></input>
-                        <button id="image-edit-btn">변경</button>
-                        <img id="profile-image-preview" src="" alt=""></img>
+                        <input 
+                            type="file" 
+                            id="profile-image-input" 
+                            accept="image/*"
+                            onChange={addImageFunc}>
+                        </input>
+                        <label id="image-edit-btn" for="profile-image-input">변경</label>
+                        <img id="profile-image-preview" src={profileImage} style={{opacity: 0.55, backgroundColor: "#464646"}} alt=""></img>
                     </div>
             </>
         );
