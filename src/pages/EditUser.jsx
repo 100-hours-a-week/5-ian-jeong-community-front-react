@@ -150,7 +150,7 @@ const EditUser = () => {
 
             </div>
             <button id="user-delete-btn" onClick={showModal}>회원 탈퇴</button>
-            <div id="edit-complete-btn">수정완료</div>
+            <div id="edit-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
 
             <Modal
                 type="유저"

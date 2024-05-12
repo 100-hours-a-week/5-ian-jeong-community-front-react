@@ -37,10 +37,6 @@ const SignUp = () => {
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
 
-
-
-
-
     const isCorrectEmail = useRef(false);
     const isCorrectPassword = useRef(false);
     const isCorrectRePassword = useRef(false);
@@ -231,6 +227,7 @@ const SignUp = () => {
         
         // validateAll();
     }
+
     
 
 
