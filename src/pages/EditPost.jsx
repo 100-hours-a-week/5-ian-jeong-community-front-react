@@ -1,29 +1,29 @@
-import React, { useState, useRef } from "react";
+import React, {useState, useRef} from "react";
 import { useNavigate } from 'react-router-dom';
 import Header from "../components/Header";
-import VerticalPadding from "../components/VerticlaPadding";
 import PageTitle from "../components/PageTitle";
-import HelperText from "../components/HelperText";
+import VerticalPadding from "../components/VerticlaPadding";
 import TitleInput from "../components/TitleInput";
 import ContentInput from "../components/ContentInput";
+import HelperText from "../components/HelperText";
 import PostImageInput from "../components/PostImageInput";
 
-import "../styles/pages/add-post.css";
+import "../styles/pages/edit-post.css";
 
-
-const AddPost = () => {
+const EditPost = () => {
+    const postId = 1; // 임시
     const title = useRef("");
     const content = useRef("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
 
     const postImageInput = useRef(""); 
-    const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
+    const [editCompleteBtnColor, setEditCompleteBtnColor] = useState('#ACA0EB');
 
     const navigate = useNavigate();
  
-    const navigateToPosts = () => {
-        navigate("/posts");
+    const navigateToPostDetail = () => {
+        navigate(`/posts/${postId}`);
     };
 
     const validateTitle = (e) => {
@@ -32,10 +32,10 @@ const AddPost = () => {
         const contentCurrentValue = content.current;
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#7F6AEE');
+            setEditCompleteBtnColor('#7F6AEE');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#ACA0EB');
+            setEditCompleteBtnColor('#ACA0EB');
         }
     }
 
@@ -45,10 +45,10 @@ const AddPost = () => {
         const contentCurrentValue = content.current;
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#7F6AEE');
+            setEditCompleteBtnColor('#7F6AEE');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#ACA0EB');   
+            setEditCompleteBtnColor('#ACA0EB');   
         }
     }
 
@@ -80,7 +80,7 @@ const AddPost = () => {
             setPostHelperTextVisibility("visible");
 
         } else { 
-            // 서버 연결하면 게시글 등록 로직 ㄱㄱ
+            // 서버 연결하면 게시글 수정완료 로직 ㄱㄱ
         }
     }
 
@@ -89,39 +89,40 @@ const AddPost = () => {
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}>
+                navigateToPreviousPage={navigateToPostDetail}>
             </Header>
+
             <VerticalPadding marginTop="4.2vh"></VerticalPadding>
-            <PageTitle text="게시글 작성" fontSize="24px"></PageTitle>
+            <PageTitle text="게시글 수정" fontSize="24px"></PageTitle>
             <VerticalPadding marginTop="4.7vh"></VerticalPadding>
-            
-            <div id="add-post-box">
-                <TitleInput validateInput={validateTitle}></TitleInput>                
+
+            <div id="edit-post-box">
+                <TitleInput validateInput={validateTitle}></TitleInput>          
                 <VerticalPadding marginTop="2.4vh"></VerticalPadding>
                 <ContentInput validateInput={validateContent}></ContentInput>
 
-                <div id="add-post-padding-box">
+                <div id="edit-post-padding-box">                
                     <HelperText
                         visibility={postHelperTextVisibility}
                         text={postHelperText}
-                        color={'#FF0000'}
-                    ></HelperText>
+                        color={'#FF0000'}>
+
+                    </HelperText>
                     <PostImageInput 
                         postImageInput={postImageInput.current}
                         addImageFunc={addImage}>
                     </PostImageInput>
                 </div>
-            </div>
-
+            </div>  
             <VerticalPadding marginTop="2.5vh"></VerticalPadding>
             <button 
-                id="complete-btn" 
+                id="edit-post-complete-btn"
                 onClick={validatePost}
-                style={{backgroundColor: completeBtnColor}}>
-                완료
+                style={{backgroundColor: editCompleteBtnColor}}>
+                수정하기
             </button>
         </>
     );
   }
   
-  export default AddPost;
+  export default EditPost;
