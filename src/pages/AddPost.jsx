@@ -16,7 +16,7 @@ const AddPost = () => {
     const content = useRef("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
-    
+
     const postImageInput = useRef(""); 
     const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
 

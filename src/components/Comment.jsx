@@ -3,10 +3,12 @@ import patric from "../assets/patric.jpg";
 
 import "../styles/components/comment.css";
 
-const Comment = () => {
+const Comment = (props) => {
+    const {showModal, editCommentMode} = props;
+
     return (
         <>
-              <div className="comment">
+              <div className="comment" data-id="">
                 <div className="comment-writer-box">
                     <div className="comment-writer">
                         <img className="comment-writer-img" src={patric}></img>
@@ -17,8 +19,8 @@ const Comment = () => {
                 </div>
 
                 <div className="comment-btn-box">
-                    <button className="comment-edit-btn">수정</button>
-                    <button className="comment-delete-btn">삭제</button>
+                    <button className="comment-edit-btn" onClick={() => editCommentMode("댓글 내용")}>수정</button>
+                    <button className="comment-delete-btn" onClick={showModal}>삭제</button>
                 </div>
             </div>
         </>
