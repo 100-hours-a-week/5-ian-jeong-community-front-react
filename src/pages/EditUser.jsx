@@ -1,5 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+
+import serverAddress from "../constants/serverAddress";
 import Header from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import HelperText from "../components/HelperText";
@@ -11,16 +13,64 @@ import VerticalPadding from "../components/VerticlaPadding";
 import "../styles/pages/edit-user.css";
 
 const EditUser = () => {
+    const userId = useRef(0);
+    const [userProfileImage, setUserProfileImage] = useState("");
     const [profileImage, setProfileImage] = useState("");
 
     const nickname = useRef("");
+    const originNickname = useRef("");
     const [nicknameHelperTextVisibility, setNicknameHelperTextVisibility] = useState('hidden');
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
     const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 30vh)");
     const [modalVisibility, setModalVisibility] = useState('hidden');
+    const [userEditBtnDisabled, setUserEditBtnDisabled] = useState(false);
+    const [userEditBtnColor, setUserEditBtnColor] = useState('#ACA0EB');
 
     const isCorrectNickname = useRef(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = {
+                id: 0
+            }
+            await getUserIdFromSession(result);
+            userId.current = result.id;
+            await getUserProfileImageById();
+        }
+
+        fetchData();
+        document.body.style.overflow = 'hidden';
+    }, []);
+
+    const getUserIdFromSession = async(result) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'})
+            .then(response => response.json())
+            .then(user => {
+                if (parseInt(user.id) !== 0) {
+                    result.id = user.id;
+                } else {
+                    alert('로그아웃 되었습니다 !');
+                    navigate(`/users/sign-in`);
+                }
+            });
+    }
+
+    const getUserProfileImageById = async () => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`) 
+            .then(userData => userData.json())
+            .then(userJson => {
+                setUserProfileImage(userJson.profileImage);
+                setProfileImage(userJson.profileImage);
+                nickname.current = userJson.nickname;
+                originNickname.current = userJson.nickname;
+                document.getElementById("nickname-input").value = userJson.nickname;
+            })
+            .catch(error => {
+                console.error('profile image fetch error:', error);
+            });
+    }
+
 
     const navigate = useNavigate();
  
@@ -39,14 +89,13 @@ const EditUser = () => {
             }
             reader.readAsDataURL(file); 
             
-    
             return;
         } 
         
         setProfileImage("");
     }
 
-    const validateNicknameInput = (e) => {
+    const validateNicknameInput = async (e) => {
         nickname.current = e.target.value;
         const nicknameCurrentValue = nickname.current;
 
@@ -70,37 +119,81 @@ const EditUser = () => {
             isCorrectNickname.current = false;   
     
         } else {
-            // const flag = {'flag' : false};
+            const flag = {'flag' : false};
                 
-            // await validateDuplicateNickname(value, flag);
-            // console.log(`닉네임 중복 검사결과: ${flag['flag']}`);
-            // if (flag['flag']) {
-            //     nicknameHelper.style.visibility = "visible";
-            //     nicknameHelper.style.color = "#0040FF";
-            //     nicknameHelper.textContent = "*사용가능한 닉네임입니다.";
-            //     isCorrectNickname = true;
+            await validateDuplicateNickname(flag);
         
-            // } else {
-            //     nicknameHelper.style.visibility = "visible";
-            //     nicknameHelper.style.color = "#FF0000";
-            //     nicknameHelper.textContent = "*중복된 닉네임 입니다.";
-            //     isCorrectNickname = false;
-            // }
+            if(nickname.current === originNickname.current) {
+                flag['flag'] = true;
+            }
+
+            console.log(`닉네임 중복 검사결과: ${flag['flag']}`);
+            if (flag['flag']) {
+                setNicknameHelperTextVisibility('visible');
+                setNicknameHelperTextColor("#0040FF");
+                setNicknameHelperText("*사용가능한 닉네임입니다.");
+                isCorrectNickname.current = true;
+        
+            } else {
+                setNicknameHelperTextVisibility('visible');
+                setNicknameHelperTextColor("#FF0000");
+                setNicknameHelperText("*중복된 닉네임 입니다.");
+                isCorrectNickname.current = false;
+            }
         }
         
-        // validateAll();
     }
 
-    const editUser = () => {
+    const editUser = async () => {
         if (isCorrectNickname.current) {
-            // 수정완료하고 토스트메시지 보여주고 리다이렉트 ㄱㄱ
-            executeToast();
+            setUserEditBtnDisabled(true);
+            setUserEditBtnColor('#7F6AEE');
+            
+            const obj = {
+                nickname : nickname.current,
+                profileImage: profileImage,
+            }
+                
+            const data = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            }
 
-            return;
+            executeToast();
+            setTimeout(async () => {    
+                
+                await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`, data)
+                    .then(async (response) => {
+
+                    if (response.status === 204) {
+                        setNicknameHelperTextVisibility('hidden');
+                        setUserEditBtnDisabled(false);
+                        setUserEditBtnColor('#ACA0EB');
+                        
+                    } else {
+                        alert('회원정보 수정 실패');
+                        setNicknameHelperTextVisibility('hidden');
+                        setUserEditBtnDisabled(false);
+                        setUserEditBtnColor('#ACA0EB');
+                    }
+                    setToastMessageMarginTop("calc(5.9vh + 30vh)");
+                    navigate(`/users/${userId.current}`);
+                })
+                .catch(error => {
+                    console.error('update fetch error:', error);
+                });
+            }, 2000);        
+
+            
+
         }
     }
 
     const executeToast= () => {
+        console.log('토스트');
         setToastMessageMarginTop("5.9vh");
     }
 
@@ -114,12 +207,30 @@ const EditUser = () => {
         setModalVisibility("hidden");
     }
 
+    const validateDuplicateNickname = async (flag) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${nickname.current}`)
+            .then(isDuplicated => isDuplicated.json())
+            .then(isDuplicatedJson => {
+                if(isDuplicatedJson.result === "true") {
+                    flag['flag'] = true;
+                }
+           });
+    }
+
+    const deleteUser = async () => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`, {method: 'DELETE'});
+
+        alert('회원탈퇴 되었습니다 !');
+        navigate('/users/sign-in');
+    }
+
     return (
         <>
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}>
+                navigateToPreviousPage={navigateToPosts}
+                userProfileImage={userProfileImage}>
             </Header>
 
             <VerticalPadding marginTop="14.9vh"></VerticalPadding>
@@ -146,16 +257,22 @@ const EditUser = () => {
                     color={nicknameHelperTextColor}>
                 </HelperText>
         
-                <button id="user-edit-btn" onClick={editUser}>수정하기</button>
+                <button id="user-edit-btn" 
+                    onClick={editUser}
+                    disabled={userEditBtnDisabled}
+                    style={{backgroundColor: userEditBtnColor}}>
+                    수정하기
+                </button>
 
             </div>
             <button id="user-delete-btn" onClick={showModal}>회원 탈퇴</button>
-            <div id="edit-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
+            <div id="edit-user-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
 
             <Modal
-                type="유저"
+                type="user-del"
                 visibility={modalVisibility}
                 showModal={showModal}
+                deleteModal={deleteUser}
             ></Modal>
         </>
     );

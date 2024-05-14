@@ -1,5 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+
+import serverAddress from './../constants/serverAddress';
 import Header from "../components/Header";
 import PageTitle from "../components/PageTitle";
 import VerticalPadding from "../components/VerticlaPadding";
@@ -10,8 +12,12 @@ import HelperText from "../components/HelperText";
 import "../styles/pages/edit-password.css";
 
 const EditPassword = () => {
-    const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 30vh)");
+    const userId = useRef(0);
+    const [userProfileImage, setUserProfileImage] = useState("");
+
+    const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 40vh)");
     const [editPasswordBtnColor, setEditPasswordBtnColor] = useState("##ACA0EB");
+    const [editPasswordDisabled, setEditPasswordDisabled] = useState(false);
 
     const password = useRef("");
     const [passwordHelperTextVisibility, setPasswordHelperTextVisibility] = useState('hidden');
@@ -23,8 +29,50 @@ const EditPassword = () => {
     const [rePasswordHelperText, setRePasswordHelperText] = useState('*helper text');
     const [rePasswordHelperTextColor, setRePasswordHelperTextColor] = useState("#FF0000");
 
+    
+
     const isCorrectPassword = useRef(false);
     const isCorrectRePassword = useRef(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = {
+                id: 0
+            }
+            await getUserIdFromSession(result);
+            userId.current = result.id;
+            await getUserProfileImageById();
+        }
+
+        fetchData();
+        document.body.style.overflow = 'hidden';
+    }, []);
+
+    const getUserIdFromSession = async(result) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'})
+            .then(response => response.json())
+            .then(user => {
+                if (parseInt(user.id) !== 0) {
+                    result.id = user.id;
+                } else {
+                    alert('로그아웃 되었습니다 !');
+                    navigate(`/users/sign-in`);
+                }
+            });
+    }
+
+    const getUserProfileImageById = async () => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`) 
+            .then(userData => userData.json())
+            .then(userJson => {
+                setUserProfileImage(userJson.profileImage);
+            })
+            .catch(error => {
+                console.error('profile image fetch error:', error);
+            });
+    }
+
+    
 
     const navigate = useNavigate();
  
@@ -55,8 +103,6 @@ const EditPassword = () => {
             setPasswordHelperText("*사용가능한 비밀번호입니다.");
             isCorrectPassword.current = true; 
         }
-    
-        // validateAll();
     }
     
     const validatePasswordFormat = (password) => {
@@ -91,8 +137,6 @@ const EditPassword = () => {
             setEditPasswordBtnColor("#7F6AEE");
             isCorrectRePassword.current = true; 
         }
-    
-        // validateAll();
     }
 
     const validatePasswordDouble = (rePasswordCurrentValue) => {
@@ -101,15 +145,46 @@ const EditPassword = () => {
 
     const EditPassword = () => {
         if (isCorrectPassword.current && isCorrectRePassword) {
-            // 수정완료하고 토스트메시지 보여주고 리다이렉트 ㄱㄱ
+            setEditPasswordDisabled(true);
             executeToast();
 
+            setTimeout(async () => {
+                const obj = {
+                    password : password.current,
+                }
+                    
+                const data = {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(obj)
+                }
+            
+                await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}/password`, data)
+                    .then(response => {
+                        if (response.status !== 204) {
+                            alert('비밀번호 수정 실패');
+                            
+                        }
+
+                        navigate(`/users/${userId}/password`);
+                        setEditPasswordDisabled(false);
+                        setEditPasswordBtnColor('#ACA0EB');
+                        setPasswordHelperTextVisibility('hidden');
+                        setRePasswordHelperTextVisibility('hidden');
+                        setToastMessageMarginTop("calc(5.9vh + 40vh)");
+                    })
+                    .catch(error => {
+                        console.error('update password fetch error:', error);
+                    });
+            }, 2000);
             return;
         }
 
     }
 
-    const executeToast= () => {
+    const executeToast = () => {
         setToastMessageMarginTop("5.9vh");
     }
 
@@ -119,7 +194,8 @@ const EditPassword = () => {
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}>
+                navigateToPreviousPage={navigateToPosts}
+                userProfileImage={userProfileImage}>
             </Header>
             
             <VerticalPadding marginTop="14.9vh"></VerticalPadding>
@@ -148,9 +224,12 @@ const EditPassword = () => {
                     color={rePasswordHelperTextColor}>
                 </HelperText>
             
-                <button id="edit-password-btn" onClick={EditPassword} style={{backgroundColor: editPasswordBtnColor}}>수정하기</button>
-                <div id="edit-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
+                <button id="edit-password-btn" 
+                    onClick={EditPassword} 
+                    disabled={editPasswordDisabled}
+                    style={{backgroundColor: editPasswordBtnColor}}>수정하기</button>
             </div> 
+                <div id="edit-password-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
         </>
     );
   }

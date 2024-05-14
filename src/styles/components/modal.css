@@ -34,7 +34,7 @@
     justify-content: space-between;
 }
 
-#modal-cancel {
+.modal-cancel {
     width: 127px;
     height: 44px;
     background-color: #242424;
@@ -48,7 +48,7 @@
     cursor: pointer;
 }
 
-#modal-delete {
+.modal-delete {
     width: 127px;
     height: 44px;
     background-color: #C4A5FA;

@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import serverAddress from './../constants/serverAddress';
 import Header from "../components/Header";
 import VerticalPadding from "../components/VerticlaPadding";
 import PageTitle from "../components/PageTitle";
@@ -12,11 +13,15 @@ import "../styles/pages/add-post.css";
 
 
 const AddPost = () => {
+    const userId = useRef(0);
+    const [userProfileImage, setUserProfileImage] = useState("");
+
     const title = useRef("");
     const content = useRef("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
 
+    const filePath = useRef("");
     const postImageInput = useRef(""); 
     const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
 
@@ -25,6 +30,44 @@ const AddPost = () => {
     const navigateToPosts = () => {
         navigate("/posts");
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = {
+                id: 0
+            }
+            await getUserIdFromSession(result);
+            userId.current = result.id;
+            await getUserProfileImageById();
+        }
+
+        fetchData();
+    }, []);
+
+    const getUserIdFromSession = async(result) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'})
+            .then(response => response.json())
+            .then(user => {
+                if (parseInt(user.id) !== 0) {
+                    result.id = user.id;
+                } else {
+                    alert('로그아웃 되었습니다 !');
+                    navigate(`/users/sign-in`);
+                }
+            });
+    }
+
+    const getUserProfileImageById = async () => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`) 
+            .then(userData => userData.json())
+            .then(userJson => {
+                setUserProfileImage(userJson.profileImage);
+            })
+            .catch(error => {
+                console.error('profile image fetch error:', error);
+            });
+    }
+
 
     const validateTitle = (e) => {
         title.current = e.target.value;
@@ -54,7 +97,8 @@ const AddPost = () => {
 
     
     const addImage = (event) => {
-        const file = event.target.files[0];
+        filePath.current = event.target.files[0].name;
+        const file = event.target.files[0]; 
         
         if (file) {
             const reader = new FileReader();
@@ -80,16 +124,53 @@ const AddPost = () => {
             setPostHelperTextVisibility("visible");
 
         } else { 
-            // 서버 연결하면 게시글 등록 로직 ㄱㄱ
+            addPost()
         }
     }
+
+    const addPost = async () => {
+        console.log(filePath.current);
+
+        const obj = {
+            writer : userId.current,
+            title: title.current,
+            content: content.current,
+            imageName: filePath.current.split('\\').pop(),
+            image: postImageInput.current,
+        }
+                
+        const data = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }
+        
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/posts`, data)
+            .then(response => {
+                if (response.status === 201) {
+                    alert('게시글이 생성되었습니다!');
+                } else {
+                    alert('게시글 작성 실패!');
+                }
+
+                navigate('/posts');
+            })
+            .catch(error => {
+            console.error('add psot fetch error:', error);
+            });
+        }
+    
+    
 
     return (
         <>
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}>
+                navigateToPreviousPage={navigateToPosts}
+                userProfileImage={userProfileImage}>
             </Header>
             <VerticalPadding marginTop="4.2vh"></VerticalPadding>
             <PageTitle text="게시글 작성" fontSize="24px"></PageTitle>

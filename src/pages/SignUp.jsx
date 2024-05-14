@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
+import serverAddress from './../constants/serverAddress';
 import Header from "../components/Header";
 import TextInput from "../components/TextInput";
 import HelperText from "../components/HelperText";
@@ -36,6 +37,9 @@ const SignUp = () => {
     const [nicknameHelperTextVisibility, setNicknameHelperTextVisibility] = useState('hidden');
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
+
+    const [signUpBtnColor, setSignUpBtnColor] = useState('#ACA0EB');
+    const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(true);
 
     const isCorrectEmail = useRef(false);
     const isCorrectPassword = useRef(false);
@@ -76,7 +80,7 @@ const SignUp = () => {
         setProfileHelperTextVisibility("visible");
     }
     
-    const validateEmailInput = (e) => {
+    const validateEmailInput = async (e) => {
         email.current = e.target.value;
         const emailCurrentValue = email.current;
     
@@ -93,31 +97,41 @@ const SignUp = () => {
             isCorrectEmail.current = false;
     
         } else {
-            // const flag = {'flag' : false};
+            const flag = {'flag' : false};
+            await validateDuplicateEmail(emailCurrentValue, flag);
+            console.log(`이메일 중복 검사결과: ${flag['flag']}`);
     
-            // await validateDuplicateEmail(value, flag);
-            // console.log(`이메일 중복 검사결과: ${flag['flag']}`);
-    
-            // if (flag['flag']) {
-            //     emailHelper.style.visibility = "visible";
-            //     emailHelper.style.color = "#0040FF";
-            //     emailHelper.textContent = "*사용가능한 이메일입니다.";
+            if (flag['flag']) {
+                setEmailHelperTextVisibility('visible');
+                setEmailHelperTextColor('#0040FF');
+                setEmailHelperText('*사용가능한 이메일입니다.');
         
-            //     isCorrectEmail = true;
-            // } else {
-            //     emailHelper.style.visibility = "visible";
-            //     emailHelper.style.color = "#FF0000";
-            //     emailHelper.textContent = "*중복된 이메일입니다.";
-            //     isCorrectEmail = false;
-            // }
+                isCorrectEmail.current = true;
+            } else {
+                setEmailHelperTextVisibility('visible');
+                setEmailHelperTextColor('#FF0000');
+                setEmailHelperText('*중복된 이메일입니다.');
+        
+                isCorrectEmail.current = false;
+            }
         }
     
-        // validateAll();
+        validateAll();
     }
 
     const validateEmailFormat = (emailCurrentValue) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         return emailRegex.test(emailCurrentValue);
+    }
+
+    const validateDuplicateEmail = async (email, flag) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/email?email=${email}`)
+            .then(isDuplicated => isDuplicated.json())
+            .then(isDuplicatedJson => {
+                if (isDuplicatedJson.result === "true") {
+                    flag['flag'] = true;
+                }
+           });
     }
 
     const validatePasswordInput = (e) => {
@@ -144,7 +158,7 @@ const SignUp = () => {
             isCorrectPassword.current = true; 
         }
     
-        // validateAll();
+        validateAll();
     }
     
     const validatePasswordFormat = (password) => {
@@ -176,14 +190,14 @@ const SignUp = () => {
             isCorrectRePassword.current = true; 
         }
     
-        // validateAll();
+        validateAll();
     }
 
     const validatePasswordDouble = (rePasswordCurrentValue) => {
         return password.current === rePasswordCurrentValue;
     }
 
-    const validateNicknameInput = (e) => {
+    const validateNicknameInput = async (e) => {
         nickname.current = e.target.value;
         const nicknameCurrentValue = nickname.current;
 
@@ -207,27 +221,79 @@ const SignUp = () => {
             isCorrectNickname.current = false;   
     
         } else {
-            // const flag = {'flag' : false};
+            const flag = {'flag' : false};
                 
-            // await validateDuplicateNickname(value, flag);
-            // console.log(`닉네임 중복 검사결과: ${flag['flag']}`);
-            // if (flag['flag']) {
-            //     nicknameHelper.style.visibility = "visible";
-            //     nicknameHelper.style.color = "#0040FF";
-            //     nicknameHelper.textContent = "*사용가능한 닉네임입니다.";
-            //     isCorrectNickname = true;
+            await validateDuplicateNickname(nicknameCurrentValue, flag);
+            console.log(`닉네임 중복 검사결과: ${flag['flag']}`);
+
+            if (flag['flag']) {
+                setNicknameHelperTextVisibility('visible');
+                setNicknameHelperTextColor("#0040FF");
+                setNicknameHelperText("*사용가능한 닉네임입니다.");
+                isCorrectNickname.current = true;
         
-            // } else {
-            //     nicknameHelper.style.visibility = "visible";
-            //     nicknameHelper.style.color = "#FF0000";
-            //     nicknameHelper.textContent = "*중복된 닉네임 입니다.";
-            //     isCorrectNickname = false;
-            // }
+            } else {
+                setNicknameHelperTextVisibility('visible');
+                setNicknameHelperTextColor("#FF0000");
+                setNicknameHelperText("*중복된 닉네임 입니다.");
+                isCorrectNickname.current = false;
+            }
         }
         
-        // validateAll();
+        validateAll();
     }
 
+    const validateDuplicateNickname = async (nickname, flag) => {
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${nickname}`)
+            .then(isDuplicated => isDuplicated.json())
+            .then(isDuplicatedJson => {
+                if(isDuplicatedJson.result === "true") {
+                    flag['flag'] = true;
+                }
+           });
+    }
+
+    const validateAll = () => {
+        if (isCorrectEmail.current && isCorrectPassword.current && isCorrectRePassword.current && isCorrectNickname.current) {
+            setSignUpBtnColor('#7F6AEE');
+            setSignUpBtnDisabled(false);
+        } else {
+            setSignUpBtnColor('#ACA0EB');
+            setSignUpBtnDisabled(true);
+        }
+    }
+
+    const signUp = async () => {
+        const obj = {
+            email : `${email.current}`,
+            password: `${password.current}`,
+            nickname: `${nickname.current}`,
+            profileImage: `${profileImage}`
+        }
+            
+        const data = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        }
+    
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users`, data)
+            .then(response => {
+            if (response.status === 201) {
+                alert('회원가입이 완료되었습니다!');
+                navigate('/users/sign-in');
+            } else {
+                alert('회원가입에 실패하였습니다!');
+                navigate('/users/sign-up');
+                
+            }
+          })
+          .catch(error => {
+            console.error('sign-up fetch error:', error);
+          });
+    }
     
 
 
@@ -292,7 +358,11 @@ const SignUp = () => {
                 </HelperText>
 
                 
-                <button id="sign-up-btn" disabled="true">회원가입</button>
+                <button 
+                    id="sign-up-btn" 
+                    disabled={signUpBtnDisabled}
+                    style={{backgroundColor: signUpBtnColor}}
+                    onClick={signUp}>회원가입</button>
             </div>
 
             <button id="move-sign-in-btn" onClick={navigateToSignIn}>로그인하러 가기</button>

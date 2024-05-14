@@ -6,12 +6,10 @@ import patric from "../assets/patric.jpg";
 import "../styles/components/header.css";
 
 const Header = (props) => {
-    const {backBtnVisibility, profileImageVisibility, navigateToPreviousPage} = props;
+    const {backBtnVisibility, profileImageVisibility, navigateToPreviousPage, userId, userProfileImage} = props;
     const [dropBoxVisibility, setDropBoxVisibility] = useState('hidden');
 
     const navigate = useNavigate();
-    const userId = 1; // 이후에 상위 컴포넌트인 페이지 렌더링 될 때 서버를 통해 인증받고 유저아이디를 props으로 받아와야함
-
 
     const showDropBox = () => {
         setDropBoxVisibility('visible');
@@ -46,7 +44,7 @@ const Header = (props) => {
                 <div id="header-box">
 
                     <img id="back-btn" src={arrow} alt="back" style={{visibility: backBtnVisibility}} onClick={navigateToPreviousPage}></img>
-                    <img id="profile-image-btn" src={patric} alt="profile-image" style={{visibility: profileImageVisibility}} onClick={showDropBox}></img>
+                    <img id="profile-image-btn" src={userProfileImage} alt="profile-image" style={{visibility: profileImageVisibility}} onClick={showDropBox}></img>
 
                     <div id="drop-down-box" style={{visibility: dropBoxVisibility}}>
 

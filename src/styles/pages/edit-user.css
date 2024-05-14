@@ -52,8 +52,7 @@
 }
     
 
-#edit-complete-btn {
-    margin-top: calc(5.9vh + 30vh);
+#edit-user-complete-btn {
     width: 102px;
     height: 46px;
     border-radius: 30px;

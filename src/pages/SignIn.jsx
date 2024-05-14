@@ -5,6 +5,7 @@ import PageTitle from "../components/PageTitle";
 import VerticalPadding from "../components/VerticlaPadding";
 import TextInput from "../components/TextInput";
 import HelperText from "../components/HelperText";
+import serverAddress from "../constants/serverAddress";
 
 import "../styles/pages/sign-in.css";
 
@@ -15,6 +16,8 @@ const SignIn = () => {
     const password = useRef("");
     const [visibility, setVisibility] = useState('hidden')
     const [helperText, setHelperText] = useState("*helper text");
+    const [signInBtnColor, setSignInBtnColor] = useState('#ACA0EB');
+    const [signInBtnDisabled, setSignInBtnDisabled] = useState(false);
 
     const navigate = useNavigate();
  
@@ -40,7 +43,7 @@ const SignIn = () => {
         return passwordRegax.test(password);
     }
 
-    const validateSignIn = () => {
+    const validateSignIn = async () => {
         if (!validateEmailFormat(email.current)) {
             setVisibility('visible');
             setHelperText("*올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)");
@@ -62,23 +65,55 @@ const SignIn = () => {
             return;
         }
         
-        // const flag = {'flag' : false};
+        const flag = {'flag' : false};
+        await validateAccount(flag, email.current, password.current);
 
-        // await validateAccount(flag, email, password);
+        if (flag['flag']) {
+            setSignInBtnColor('#7F6AEE');
+            setVisibility('hidden');
+            setSignInBtnDisabled(true);
 
-        // if (flag['flag']) {
-        //     document.getElementById('sign-in-btn').style.backgroundColor = '#7F6AEE';
-        //     helperText.style.visibility = 'hidden';
+
+            await setTimeout(() => {
+                setSignInBtnColor('#ACA0EB');
+                setSignInBtnDisabled(false);
+                navigate('/posts');
+            }, 3000);        
+            
         
-        //     return flag['flag'];
-        // }
+            return
+        }
     
-        // helperText.style.visibility = 'visible';
-        // helperText.textContent = "*비밀번호가 다릅니다.";
-        
-        // return flag['flag'];
+        setVisibility('visible')
+        setHelperText('*비밀번호가 다릅니다.');        
     }
 
+
+    const validateAccount = async (flag, email, password) => {
+        const obj = {
+            email : `${email}`,
+            password : `${password}`
+        }
+    
+        const data = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj),
+            credentials: 'include'
+        }
+        
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/sign-in`, data) 
+            .then(isAuthenticated => isAuthenticated.json())
+            .then(isAuthenticatedJson => {
+                console.log(`게정 검증결과: ${isAuthenticatedJson.result}`);
+                 if(isAuthenticatedJson.result === "true") {
+                    flag['flag'] = true;
+                 }
+            });
+    }
+    
 
 
     return (
@@ -94,7 +129,13 @@ const SignIn = () => {
             </div>
 
 
-            <button id="sign-in-btn" onClick={validateSignIn}>로그인</button>
+            <button 
+                id="sign-in-btn" 
+                onClick={validateSignIn}
+                style={{backgroundColor: signInBtnColor}}
+                disabled={signInBtnDisabled}>
+                로그인
+            </button>
             <button id="move-sign-up-btn" onClick={navigateToSignUp}>회원가입</button>
         </>
     );
