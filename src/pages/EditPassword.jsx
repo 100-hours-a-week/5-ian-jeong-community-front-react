@@ -168,7 +168,7 @@ const EditPassword = () => {
                             
                         }
 
-                        navigate(`/users/${userId}/password`);
+                        navigate(`/users/${userId.current}/password`);
                         setEditPasswordDisabled(false);
                         setEditPasswordBtnColor('#ACA0EB');
                         setPasswordHelperTextVisibility('hidden');

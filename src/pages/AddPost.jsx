@@ -21,7 +21,7 @@ const AddPost = () => {
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
 
-    const filePath = useRef("");
+    const [fileName, setFileName] = useState("");
     const postImageInput = useRef(""); 
     const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
 
@@ -97,8 +97,8 @@ const AddPost = () => {
 
     
     const addImage = (event) => {
-        filePath.current = event.target.files[0].name;
         const file = event.target.files[0]; 
+        setFileName(event.target.value.split('\\').pop());
         
         if (file) {
             const reader = new FileReader();
@@ -129,13 +129,12 @@ const AddPost = () => {
     }
 
     const addPost = async () => {
-        console.log(filePath.current);
 
         const obj = {
             writer : userId.current,
             title: title.current,
             content: content.current,
-            imageName: filePath.current.split('\\').pop(),
+            imageName: fileName,
             image: postImageInput.current,
         }
                 
@@ -189,7 +188,8 @@ const AddPost = () => {
                     ></HelperText>
                     <PostImageInput 
                         postImageInput={postImageInput.current}
-                        addImageFunc={addImage}>
+                        addImageFunc={addImage}
+                        fileName={fileName}>
                     </PostImageInput>
                 </div>
             </div>
