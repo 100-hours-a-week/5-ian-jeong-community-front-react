@@ -1,6 +1,7 @@
 import React from "react";
-import placeholderMessage from "../constants/placeholder";
-import "../styles/components/content-input.css";
+
+import placeholderMessage from "../../constants/placeholder";
+import "../../styles/components/post/content-input.css";
 
 const ContentInput = (props) => {
     const {validateInput} = props;

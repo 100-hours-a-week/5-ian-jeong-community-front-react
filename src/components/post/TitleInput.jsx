@@ -1,7 +1,8 @@
 import React from "react";
-import placeholderMessage from "../constants/placeholder";
 
-import "../styles/components/title-input.css";
+import placeholderMessage from "../../constants/placeholder";
+import "../../styles/components/post/title-input.css";
+
 
 
 const TitleInput = (props) => {

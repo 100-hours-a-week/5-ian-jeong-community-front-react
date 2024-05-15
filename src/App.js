@@ -1,13 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Welcome from "./pages/Welcome";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Posts from "./pages/Posts";
-import AddPost from "./pages/AddPost";
-import PostDetail from "./pages/PostDetail";
-import EditPost from "./pages/EditPost";
-import EditUser from "./pages/EditUser";
-import EditPassword from "./pages/EditPassword";
+
+import Welcome from "./pages/common/Welcome";
+import SignIn from "./pages/user/SignIn";
+import SignUp from "./pages/user/SignUp";
+import EditUser from "./pages/user/EditUser";
+import EditPassword from "./pages/user/EditPassword";
+import Posts from "./pages/post/Posts";
+import AddPost from "./pages/post/AddPost";
+import PostDetail from "./pages/post/PostDetail";
+import EditPost from "./pages/post/EditPost";
+
+
 
 function App() {
   return (

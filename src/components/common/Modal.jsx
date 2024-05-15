@@ -1,6 +1,8 @@
 import React from "react";
 
-import "./../styles/components/modal.css";
+import "../../styles/components/common/modal.css";
+
+
 
 const Modal = (props) => {
     const {type, visibility, showModal, deleteModal} = props;

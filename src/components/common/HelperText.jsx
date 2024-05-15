@@ -1,5 +1,8 @@
 import React from "react";
-import "./../styles/components/helper-text.css";
+
+import "../../styles/components/common/helper-text.css";
+
+
 
 const HelperText = (props) => {
     const {visibility, text, color} = props;
@@ -8,6 +11,8 @@ const HelperText = (props) => {
         color: color,
     }
 
+
+    
     return (
         <>
             <div 

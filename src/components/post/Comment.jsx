@@ -1,7 +1,8 @@
 import React from "react";
-import patric from "../assets/patric.jpg";
 
-import "../styles/components/comment.css";
+import "../../styles/components/post/comment.css";
+
+
 
 const Comment = (props) => {
     const {data, showModal, editCommentMode, clickComment} = props;

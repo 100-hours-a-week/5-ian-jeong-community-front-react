@@ -1,20 +1,31 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
-import serverAddress from "../constants/serverAddress";
-import Header from "../components/Header";
-import Comment from "../components/Comment";
-import Modal from "../components/Modal";
-import VerticalPadding from "../components/VerticlaPadding";
+import { useParams } from 'react-router-dom';
 
-import "../styles/pages/post-detail.css";
+import useNavigator from "../../hooks/useNavigator";
+import useFetch from "../../hooks/useFetch";
+import serverAddress from "../../constants/serverAddress";
+import Header from "../../components/common/Header";
+import Modal from "../../components/common/Modal";
+import VerticalPadding from "../../components/common/VerticlaPadding";
+import Comment from "../../components/post/Comment";
+import "../../styles/pages/post/post-detail.css";
 
 
 const PostDetail = () => {
-    const userId = useRef(0);
-    const clickComment = useRef(0);
-    const [userProfileImage, setUserProfileImage] = useState("");
+    const navigator = useNavigator();
+
+    const {fetchResult: userId, fetchData: fetchUserId} = useFetch();
+    const {fetchResult: user, fetchData: fetchUser} = useFetch();
+    const {fetchResult: post, fetchData: fetchPost} = useFetch();
+    const {fetchResult: postWriter, fetchData: fetchPostWriter} = useFetch();
+    const {fetchResult: updateHitsResult, fetchData: fetchUpdateHitsResult} = useFetch();
+    const {fetchResult: postCommments, fetchData: fetchPostComments} = useFetch();
+    
     const { postId } = useParams();
     const commentInput = useRef("");
+    const clickComment = useRef(0);
+
+    const [userProfileImage, setUserProfileImage] = useState("");
     const [modalVisibility, setModalVisibility] = useState('hidden');
     const [addCommnetBtnColor, setAddCommentBtnColor] = useState('#ACA0EB');
     const [addCommentBtnDisabled, setAddCommentBtnDisabled] = useState(true)
@@ -32,54 +43,157 @@ const PostDetail = () => {
     const [postDetailCommentNum, setPostDetailCommentNum] = useState(0);
     const [comments, setComments] = useState([]);
 
-    const navigate = useNavigate();
- 
-    const navigateToPosts = () => {
-        navigate("/posts");
-    };
-
-    const navigateToEditPost = () => {
-        navigate(`/posts/${postId}/edit`);
-    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            const result = {
-                id: 0
-            }
-            await getUserIdFromSession(result);
-            userId.current = result.id;
-            await getUserProfileImageById();
-            await getPost();
-            await getComments();
-        }
-
-        fetchData();
+        getUserIdFromSession();
     }, []);
 
-    const getUserIdFromSession = async(result) => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'})
-            .then(response => response.json())
-            .then(user => {
-                if (parseInt(user.id) !== 0) {
-                    result.id = user.id;
-                } else {
-                    alert('로그아웃 되었습니다 !');
-                    navigate(`/users/sign-in`);
-                }
-            });
+    useEffect(() => {
+        if (userId == null) {
+            return;
+        }
+
+        console.log(`인증 유저 아이디: ${userId}`);
+
+        if (parseInt(userId) === 0) {
+            alert('로그아웃 되었습니다 !');
+            navigator.navigateToSignIn();
+        } 
+
+        getUserProfileImageById();
+        getPost();
+        getComments();
+    }, [userId]);
+
+    useEffect(() => {
+        if (user == null) {
+            return;
+        }
+  
+        setUserProfileImage(user.profileImage);
+
+    }, [user])
+
+    useEffect(() => {
+        if (post == null) {
+            return;
+        }
+
+        setPostDetailTitle(post.title);
+        console.log(userId);
+        console.log(post.writer);
+        if (parseInt(userId) != parseInt(post.writer)) {
+            setPostDetailEditBtnVisibility('hidden');
+            setPostDetailDeleteBtnVisibility('hidden');
+        }
+
+        setPostDetailTime(post.time)
+        setPostDetailImage(post.image);
+        setPostDetailContent(post.content);
+
+        const newHits = post.hits + 1;
+        setPostDetailHits(newHits); // 바로 업데이트 안됨, 다음 렌더링 사이클에서 한꺼번에 됨
+        const commentNum = parseInt(post.comments);
+        setPostDetailCommentNum(commentNum);
+         
+        getPostWriter();
+        updateHits();
+    }, [post])
+
+
+    useEffect(() => {
+        if (postWriter == null) {
+            return;
+        }
+
+        setWriter(postWriter.nickname);
+        setWriterProfileImage(postWriter.profileImage);
+
+    }, [postWriter])
+
+    useEffect(() => {
+        if (updateHitsResult === 204) {
+            console.log('조회수 업데이트 성공');
+        } else {
+            console.log('조회수 업데이트 실패');
+        }
+    }, [updateHitsResult]);
+
+    useEffect(() => {
+        if (postCommments == null) {
+            return;
+        }
+
+        setComments([]);
+
+        postCommments.forEach(async (comment) => {
+            const commentData = {
+                id: comment.id,
+                time: comment.time,
+                text: comment.text,
+            }
+        
+            await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${comment.writer}`)
+                .then(userData => userData.json())
+                .then(userJson => {
+                    if (parseInt(userJson.result.id) !== parseInt(userId)) {
+                        commentData.editBtnVisibility = 'hidden';
+                        commentData.deleteBtnVisibility = 'hidden';
+                    }
+                
+                    commentData.profileImage = userJson.result.profileImage;
+                    commentData.nickname = userJson.result.nickname;
+                });
+            
+            setComments(prevComments => [...prevComments, commentData]);
+        })
+    }, [postCommments]);
+
+
+
+
+    const getUserIdFromSession = async() => {
+        await fetchUserId(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'});
     }
 
     const getUserProfileImageById = async () => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`) 
-            .then(userData => userData.json())
-            .then(userJson => {
-                setUserProfileImage(userJson.profileImage);
-            })
-            .catch(error => {
-                console.error('profile image fetch error:', error);
-            });
+        await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
     }
+
+    const getPost = async () => {
+        await fetchPost(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, {mehtod: 'GET'});
+    }
+
+    const getPostWriter = async () => {
+        await fetchPostWriter(`${serverAddress.BACKEND_IP_PORT}/users/${post.writer}`, {mehtod: 'GET'});
+    }
+
+    const getComments = async () => {
+        await fetchPostComments(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}/comments`, {mehtod: 'GET'});
+    }
+
+    const updateHits = async () => {
+        const obj = {
+            title: post.title,
+            content: post.content,
+            imageName: post.imageName,
+            image: post.image,
+            hits: post.hits + 1,
+        }
+                    
+        const data = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+                body: JSON.stringify(obj)
+        }
+
+        await fetchUpdateHitsResult(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, data);
+    }
+
+
+    
 
 
 
@@ -102,9 +216,11 @@ const PostDetail = () => {
 
     const deleteModal = async (e) => {
         if(e.target.id === 'post-del') {
-            await fetch(`${serverAddress.serverAddress.BACKEND_IP_PORT}/posts/${postId}`, {method: 'DELETE'});
+            await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, {method: 'DELETE'});
             alert('해당 게시글이 삭제되었습니다!');
-            navigate('/posts');
+            document.body.style.overflow = 'auto';
+            setModalVisibility('hidden');
+            navigator.navigateToPosts();
         }
         
         if(e.target.id === 'comment-del') {    
@@ -140,101 +256,21 @@ const PostDetail = () => {
         commentInput.current = comment;
     }
 
-    const getPost = async () => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`) 
-            .then(postData => postData.json()) 
-            .then(async (postJson) => {
-                setPostDetailTitle(postJson.title);
-                
-                if (parseInt(userId.current) != parseInt(postJson.writer)) {
-                    console.log('hi');
-                    setPostDetailEditBtnVisibility('hidden');
-                    setPostDetailDeleteBtnVisibility('hidden');
-                }
-                        
-                await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${postJson.writer}`) 
-                    .then(userData => userData.json())
-                    .then(userJson => {
-                        
-                        setWriter(userJson.nickname);
-                        setWriterProfileImage(userJson.profileImage);
-                    });
-                
-                setPostDetailTime(postJson.time)
-                setPostDetailImage(postJson.image);
-                setPostDetailContent(postJson.content);
-                const newHits = postJson.hits + 1;
-                console.log(postJson.hits + 1);
-                setPostDetailHits(newHits); // 바로 업데이트 안됨, 다음 렌더링 사이클에서 한꺼번에 됨
-                const commentNum = parseInt(postJson.comments);
-                setPostDetailCommentNum(commentNum);
+
+
+
+
+
     
-                const obj = {
-                    title: postJson.title,
-                    content: postJson.content,
-                    imageName: postJson.imageName,
-                    image: postJson.image,
-                    hits: postJson.hits + 1,
-                }
-                    
-                const data = {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(obj)
-                }
-            
-                await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, data)
-                    .then(response => {
-                    if (response.status === 204) {
-                        console.log('조회수 업데이트 성공');
-                    } else {
-                        console.log('조회수 업데이트 실패');
-                    }
-                  })
-                  .catch(error => {
-                    console.error('fetch error:', error);
-                  });
-            });
-    }
 
 
-    const getComments = async () => {
-        setComments([]);
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}/comments`) 
-            .then(commentsData => commentsData.json())
-            .then(commentsJson => {
-                commentsJson.forEach(async (comment) => {
-                    const commentData = {
-                        id: comment.id,
-                        time: comment.time,
-                        text: comment.text,
-                    }
-                
-                
-                    await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${comment.writer}`)
-                        .then(userData => userData.json())
-                        .then(userJson => {
-                            if (parseInt(userJson.id) !== parseInt(userId.current)) {
-                                commentData.editBtnVisibility = 'hidden';
-                                commentData.deleteBtnVisibility = 'hidden';
-                            }
-                        
-                            commentData.profileImage = userJson.profileImage;
-                            commentData.nickname = userJson.nickname;
-                        });
-                    
-                    setComments(prevComments => [...prevComments, commentData]);
-            })
-        });
-    }
+
 
     const addComment = async () => {
         if(addCommentBtnText === '댓글 등록') {
             const obj = {
                 postId : postId,
-                writer : userId.current,
+                writer : userId,
                 text : commentInput.current,
             }
         
@@ -305,7 +341,7 @@ const PostDetail = () => {
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}
+                navigateToPreviousPage={navigator.navigateToPosts}
                 userProfileImage={userProfileImage}>
             </Header>
 
@@ -319,7 +355,7 @@ const PostDetail = () => {
                     <div id="post-detail-time">{postDetailTime}</div>
                     <button 
                         id="post-detail-edit-btn" 
-                        onClick={navigateToEditPost}
+                        onClick={() => navigator.navigateToEditPost(postId)}
                         style={{visibility: postDetailEditBtnVisibility}}>
                         수정
                     </button>
@@ -351,9 +387,6 @@ const PostDetail = () => {
             </div>
 
             <hr id="line1"/>
-
-
-
 
 
             <textarea 

@@ -1,24 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 
-import serverAddress from "../constants/serverAddress";
-import Header from "../components/Header";
-import PageTitle from "../components/PageTitle";
-import HelperText from "../components/HelperText";
-import TextInput from "../components/TextInput";
-import Modal from "../components/Modal";
-import ProfileImageInputBox from "../components/ProfileImageInputBox";
-import VerticalPadding from "../components/VerticlaPadding";
+import useNavigator from "../../hooks/useNavigator";
+import useRefCapsule from "../../hooks/useRefCapsule";
+import useFetch from "../../hooks/useFetch";
+import serverAddress from "../../constants/serverAddress";
+import Header from "../../components/common/Header";
+import PageTitle from "../../components/common/PageTitle";
+import HelperText from "../../components/common/HelperText";
+import Modal from "../../components/common/Modal";
+import VerticalPadding from "../../components/common/VerticlaPadding";
+import TextInput from "../../components/user/TextInput";
+import ProfileImageInputBox from "../../components/user/ProfileImageInputBox";
+import "../../styles/pages/user/edit-user.css";
 
-import "../styles/pages/edit-user.css";
+
 
 const EditUser = () => {
-    const userId = useRef(0);
+    const navigator = useNavigator();
+    
+    const {fetchResult: userId, fetchData: fetchUserId} = useFetch();
+    const {fetchResult: user, fetchData: fetchUser} = useFetch();
+    
+    const {get: getNickname, set: setNickname} = useRefCapsule("");
+    const {get: isCorrectNickname, set: setCorrectNickname} = useRefCapsule(false);
+    
     const [userProfileImage, setUserProfileImage] = useState("");
     const [profileImage, setProfileImage] = useState("");
-
-    const nickname = useRef("");
-    const originNickname = useRef("");
+    const [email, setEmail] = useState("");
+    
     const [nicknameHelperTextVisibility, setNicknameHelperTextVisibility] = useState('hidden');
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
@@ -27,55 +36,47 @@ const EditUser = () => {
     const [userEditBtnDisabled, setUserEditBtnDisabled] = useState(false);
     const [userEditBtnColor, setUserEditBtnColor] = useState('#ACA0EB');
 
-    const isCorrectNickname = useRef(false);
 
+    
     useEffect(() => {
-        const fetchData = async () => {
-            const result = {
-                id: 0
-            }
-            await getUserIdFromSession(result);
-            userId.current = result.id;
-            await getUserProfileImageById();
-        }
-
-        fetchData();
-        document.body.style.overflow = 'hidden';
+        getUserIdFromSession();
+        
     }, []);
 
-    const getUserIdFromSession = async(result) => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'})
-            .then(response => response.json())
-            .then(user => {
-                if (parseInt(user.id) !== 0) {
-                    result.id = user.id;
-                } else {
-                    alert('로그아웃 되었습니다 !');
-                    navigate(`/users/sign-in`);
-                }
-            });
+    useEffect(() => {
+        if (userId == null) {
+            return;
+        }
+
+        console.log(`인증 유저 아이디: ${userId}`);
+
+        if (parseInt(userId) === 0) {
+            alert('로그아웃 되었습니다 !');
+            navigator.navigateToSignIn();
+        } 
+
+        getUserProfileImageById();
+
+    }, [userId]);
+
+    useEffect(() => {
+        if (user == null) {
+            return;
+        }
+  
+        setUserProfileImage(user.profileImage);
+        setProfileImage(user.profileImage);
+        setEmail(user.email);
+        setNickname(user.nickname);
+        document.getElementById("nickname-input").value = user.nickname;
+    }, [user])
+
+    const getUserIdFromSession = async() => {
+        await fetchUserId(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'});
     }
 
     const getUserProfileImageById = async () => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`) 
-            .then(userData => userData.json())
-            .then(userJson => {
-                setUserProfileImage(userJson.profileImage);
-                setProfileImage(userJson.profileImage);
-                nickname.current = userJson.nickname;
-                originNickname.current = userJson.nickname;
-                document.getElementById("nickname-input").value = userJson.nickname;
-            })
-            .catch(error => {
-                console.error('profile image fetch error:', error);
-            });
-    }
-
-
-    const navigate = useNavigate();
- 
-    const navigateToPosts = () => {
-        navigate(`/posts`);
+        await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
     }
 
     const addImage = (event) => {
@@ -96,34 +97,34 @@ const EditUser = () => {
     }
 
     const validateNicknameInput = async (e) => {
-        nickname.current = e.target.value;
-        const nicknameCurrentValue = nickname.current;
+        setNickname(e.target.value);
+        const nicknameCurrentValue = getNickname();
 
         if (!nicknameCurrentValue) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임을 입력해주세요.");
-            isCorrectNickname.current = false;   
+            setCorrectNickname(false);
     
         } else if (nicknameCurrentValue.search(/\s/) != -1) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*띄어쓰기를 없애주세요.");
-            isCorrectNickname.current = false;   
+            setCorrectNickname(false);
     
     
         } else if (nicknameCurrentValue.length > 11) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임은 최대 10자 까지 작성 가능합니다.");
-            isCorrectNickname.current = false;   
+            setCorrectNickname(false);
     
         } else {
             const flag = {'flag' : false};
                 
             await validateDuplicateNickname(flag);
         
-            if(nickname.current === originNickname.current) {
+            if(getNickname() === user.nickname) {
                 flag['flag'] = true;
             }
 
@@ -132,25 +133,25 @@ const EditUser = () => {
                 setNicknameHelperTextVisibility('visible');
                 setNicknameHelperTextColor("#0040FF");
                 setNicknameHelperText("*사용가능한 닉네임입니다.");
-                isCorrectNickname.current = true;
+                setCorrectNickname(true);
         
             } else {
                 setNicknameHelperTextVisibility('visible');
                 setNicknameHelperTextColor("#FF0000");
                 setNicknameHelperText("*중복된 닉네임 입니다.");
-                isCorrectNickname.current = false;
+                setCorrectNickname(false);
             }
         }
         
     }
 
     const editUser = async () => {
-        if (isCorrectNickname.current) {
+        if (isCorrectNickname) {
             setUserEditBtnDisabled(true);
             setUserEditBtnColor('#7F6AEE');
             
             const obj = {
-                nickname : nickname.current,
+                nickname : getNickname,
                 profileImage: profileImage,
             }
                 
@@ -165,7 +166,7 @@ const EditUser = () => {
             executeToast();
             setTimeout(async () => {    
                 
-                await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`, data)
+                await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, data)
                     .then(async (response) => {
 
                     if (response.status === 204) {
@@ -180,7 +181,7 @@ const EditUser = () => {
                         setUserEditBtnColor('#ACA0EB');
                     }
                     setToastMessageMarginTop("calc(5.9vh + 30vh)");
-                    navigate(`/users/${userId.current}`);
+                    navigator.navigateToEditUser(userId);
                 })
                 .catch(error => {
                     console.error('update fetch error:', error);
@@ -192,8 +193,7 @@ const EditUser = () => {
         }
     }
 
-    const executeToast= () => {
-        console.log('토스트');
+    const executeToast = () => {
         setToastMessageMarginTop("5.9vh");
     }
 
@@ -208,7 +208,7 @@ const EditUser = () => {
     }
 
     const validateDuplicateNickname = async (flag) => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${nickname.current}`)
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${getNickname()}`)
             .then(isDuplicated => isDuplicated.json())
             .then(isDuplicatedJson => {
                 if(isDuplicatedJson.result === "true") {
@@ -218,10 +218,10 @@ const EditUser = () => {
     }
 
     const deleteUser = async () => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId.current}`, {method: 'DELETE'});
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'DELETE'});
 
         alert('회원탈퇴 되었습니다 !');
-        navigate('/users/sign-in');
+        navigator.navigateToSignIn();
     }
 
     return (
@@ -229,7 +229,7 @@ const EditUser = () => {
             <Header 
                 backBtnVisibility="visible" 
                 profileImageVisibility="visible"
-                navigateToPreviousPage={navigateToPosts}
+                navigateToPreviousPage={navigator.navigateToPosts}
                 userProfileImage={userProfileImage}>
             </Header>
 
@@ -245,10 +245,8 @@ const EditUser = () => {
                     addImageFunc={addImage}>
                 </ProfileImageInputBox>
                     
-
-
                 <div id="email-text">이메일</div>
-                <div id="email">jms3847@gmail.com</div>
+                <div id="email">{email}</div>
 
                 <TextInput type='nickname' validateInput={validateNicknameInput}></TextInput>
                 <HelperText 

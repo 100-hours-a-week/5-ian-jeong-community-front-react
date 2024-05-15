@@ -1,5 +1,5 @@
-import placeholderMessage from "../constants/placeholder";
-import "./../styles/components/text-input.css";
+import placeholderMessage from "../../constants/placeholder";
+import "../../styles/components/user/text-input.css";
 
 
 
@@ -68,7 +68,7 @@ const TextInput = (props) => {
                 id={id} 
                 className="text-input" 
                 placeholder={placeholder}
-                onInput={(e) => validateInput(e)}
+                onInput={(e) => validateInput(e.target.value)}
             >
 
             </input>

@@ -1,5 +1,8 @@
 import React from "react";
-import "./../styles/components/page-title.css";
+
+import "../../styles/components/common/page-title.css";
+
+
 
 const PageTitle = (props) => {
     const {text, fontSize, flag} = props;

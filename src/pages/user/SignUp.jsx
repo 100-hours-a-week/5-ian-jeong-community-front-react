@@ -1,39 +1,62 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
-import serverAddress from './../constants/serverAddress';
-import Header from "../components/Header";
-import TextInput from "../components/TextInput";
-import HelperText from "../components/HelperText";
-import ProfileImageInputBox from "../components/ProfileImageInputBox";
-import PageTitle from "../components/PageTitle";
-import VerticalPadding from "../components/VerticlaPadding";
+import React, { useState, useEffect } from "react";
 
-import "../styles/pages/sign-up.css";
+import useRefCapsule from "../../hooks/useRefCapsule";
+import useNavigator from "../../hooks/useNavigator";
+import useFetch from "../../hooks/useFetch";
+import utility from "../../utils/utility";
+import serverAddress from '../../constants/serverAddress';
+import Header from "../../components/common/Header";
+import HelperText from "../../components/common/HelperText";
+import PageTitle from "../../components/common/PageTitle";
+import VerticalPadding from "../../components/common/VerticlaPadding";
+import TextInput from "../../components/user/TextInput";
+import ProfileImageInputBox from "../../components/user/ProfileImageInputBox";
+
+import "../../styles/pages/user/sign-up.css";
 
 
 
 const SignUp = () => {
+    const navigator = useNavigator();
+
+    const {get: getEmail, set: setEmail} = useRefCapsule("");
+    const {get: isCorrectEmail, set: setCorrectEmail} = useRefCapsule(false);
+
+    const {get: getPassword, set: setPassword} = useRefCapsule("");
+    const {get: isCorrectPassword, set: setCorrectPassword} = useRefCapsule(false);
+
+    const {get: getRepassword, set: setRepassword} = useRefCapsule("");
+    const {get: isCorrectRePassword, set: setCorrectRePassword} = useRefCapsule(false);
+
+    const {get: getNickname, set: setNickname} = useRefCapsule("");
+    const {get: isCorrectNickname, set: setCorrectNickname} = useRefCapsule(false);
+    
+    const {fetchResult: emailDuplicateResult, fetchData: fetchEmailDuplicateResult} = useFetch();
+    const {fetchResult: nicknameDuplicateResult, fetchData: fetchNicknameDuplicateResult} = useFetch();
+    const {fetchResult: signUpResult, fetchData: fetchSignUpResult} = useFetch();
+    
+
+
     const [profileHelperTextVisibility, setProfileHelperTextVisibility] = useState('visible');
     const [profileHelperText, setProfileHelperText] = useState("*프로필 사진을 추가해주세요");
     const [profileImage, setProfileImage] = useState("");
     const [profileOpacity, setProfileOpacity] = useState(1);
 
-    const email = useRef("");
+
     const [emailHelperTextVisibility, setEmailHelperTextVisibility] = useState('hidden');
     const [emailHelperText, setEmailHelperText] = useState('*helper text');
     const [emailHelperTextColor, setEmailHelperTextColor] = useState("#FF0000");
 
-    const password = useRef("");
+
     const [passwordHelperTextVisibility, setPasswordHelperTextVisibility] = useState('hidden');
     const [passwordHelperText, setPasswordHelperText] = useState('*helper text');
     const [passwordHelperTextColor, setPasswordHelperTextColor] = useState("#FF0000");
 
-    const rePassword = useRef("");
+
     const [rePasswordHelperTextVisibility, setRePasswordHelperTextVisibility] = useState('hidden');
     const [rePasswordHelperText, setRePasswordHelperText] = useState('*helper text');
     const [rePasswordHelperTextColor, setRePasswordHelperTextColor] = useState("#FF0000");
 
-    const nickname = useRef("");
     const [nicknameHelperTextVisibility, setNicknameHelperTextVisibility] = useState('hidden');
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
@@ -41,22 +64,74 @@ const SignUp = () => {
     const [signUpBtnColor, setSignUpBtnColor] = useState('#ACA0EB');
     const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(true);
 
-    const isCorrectEmail = useRef(false);
-    const isCorrectPassword = useRef(false);
-    const isCorrectRePassword = useRef(false);
-    const isCorrectNickname = useRef(false);
+    // 이후에 커스텀 훅으로 빼자
+    // 내부 로직은 callback 함수로 전달하면 될듯
+    useEffect(() => {
+        if (emailDuplicateResult == null) {
+            return;
+        }
+
+        console.log(`이메일 중복 검사결과: ${emailDuplicateResult}`);
+
+    
+        if (emailDuplicateResult === 'true') {
+            setEmailHelperTextVisibility('visible');
+            setEmailHelperTextColor('#0040FF');
+            setEmailHelperText('*사용가능한 이메일입니다.');
+            setCorrectEmail(true);
+
+        } else {
+            setEmailHelperTextVisibility('visible');
+            setEmailHelperTextColor('#FF0000');
+            setEmailHelperText('*중복된 이메일입니다.');
+            setCorrectEmail(false);
+        }
+
+        validateAll();
+
+    }, [emailDuplicateResult]);
+
+    useEffect(() => {
+        if (nicknameDuplicateResult == null) {
+            return;
+        }
+        console.log(`닉네임 중복 검사결과: ${nicknameDuplicateResult}`);
+
+        if (nicknameDuplicateResult === 'true') {
+            setNicknameHelperTextVisibility('visible');
+            setNicknameHelperTextColor("#0040FF");
+            setNicknameHelperText("*사용가능한 닉네임입니다.");
+            setCorrectNickname(true);
+        
+        } else {
+            setNicknameHelperTextVisibility('visible');
+            setNicknameHelperTextColor("#FF0000");
+            setNicknameHelperText("*중복된 닉네임 입니다.");
+            setCorrectNickname(false);
+        }
+
+        validateAll();
+
+    }, [nicknameDuplicateResult]);
+
+    useEffect(() => {
+        if (signUpResult === null) {
+            return;
+        }
+
+        if (signUpResult === 201) {
+            alert('회원가입이 완료되었습니다!');
+            navigator.navigateToSignIn();
+
+        } else {
+            alert('회원가입에 실패하였습니다!');
+            navigator.navigateToSignUp();
+
+        }
+
+    }, [signUpResult]);
 
 
-
-    const navigate = useNavigate();
- 
-    const navigateToSignIn = () => {
-        navigate("/users/sign-in");
-    };
-
-    const navigateToPreviousPage = () => {
-        navigate("/users/sign-in");
-    };
 
     const addImage = (event) => {
         const file = event.target.files[0];
@@ -80,181 +155,140 @@ const SignUp = () => {
         setProfileHelperTextVisibility("visible");
     }
     
-    const validateEmailInput = async (e) => {
-        email.current = e.target.value;
-        const emailCurrentValue = email.current;
+    const validateEmailInput = async (value) => {
+        console.log(value);
+        setEmail(value);
+        const emailCurrentValue = getEmail();
     
         if (!emailCurrentValue) {
             setEmailHelperTextVisibility('visible');
             setEmailHelperTextColor('#FF0000');
             setEmailHelperText("*이메일을 입력해주세요");
-            isCorrectEmail.current = false;
+            setCorrectEmail(false);
     
-        } else if (!validateEmailFormat(emailCurrentValue)) { 
+        } else if (!utility.validateEmailFormat(emailCurrentValue)) { 
             setEmailHelperTextVisibility('visible');
             setEmailHelperTextColor('#FF0000');
             setEmailHelperText("*올바른 이메일 주소 형식을 입력해주세요. (예:example@example.com)");
-            isCorrectEmail.current = false;
+            setCorrectEmail(false);
     
         } else {
-            const flag = {'flag' : false};
-            await validateDuplicateEmail(emailCurrentValue, flag);
-            console.log(`이메일 중복 검사결과: ${flag['flag']}`);
-    
-            if (flag['flag']) {
-                setEmailHelperTextVisibility('visible');
-                setEmailHelperTextColor('#0040FF');
-                setEmailHelperText('*사용가능한 이메일입니다.');
-        
-                isCorrectEmail.current = true;
-            } else {
-                setEmailHelperTextVisibility('visible');
-                setEmailHelperTextColor('#FF0000');
-                setEmailHelperText('*중복된 이메일입니다.');
-        
-                isCorrectEmail.current = false;
-            }
+            await validateDuplicateEmail();
         }
-    
+
         validateAll();
     }
 
-    const validateEmailFormat = (emailCurrentValue) => {
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        return emailRegex.test(emailCurrentValue);
+    const validateDuplicateEmail = async () => {
+        const data = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        }
+
+        await fetchEmailDuplicateResult(`${serverAddress.BACKEND_IP_PORT}/users/email?email=${getEmail()}`, data);
     }
 
-    const validateDuplicateEmail = async (email, flag) => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/email?email=${email}`)
-            .then(isDuplicated => isDuplicated.json())
-            .then(isDuplicatedJson => {
-                if (isDuplicatedJson.result === "true") {
-                    flag['flag'] = true;
-                }
-           });
-    }
-
-    const validatePasswordInput = (e) => {
-        password.current = e.target.value;
-        const passwordCurrentValue = password.current;
-    
+    const validatePasswordInput = (newValue) => {
+        setPassword(newValue);
+        const passwordCurrentValue = getPassword();
     
         if (!passwordCurrentValue) {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#FF0000");
             setPasswordHelperText("*비밀번호를 입력해주세요");
-            isCorrectPassword.current = false;
+            setCorrectPassword(false);
     
-        } else if(!validatePasswordFormat(passwordCurrentValue)) {
+        } else if(!utility.validatePasswordFormat(passwordCurrentValue)) {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#FF0000");
             setPasswordHelperText("*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포합해야 합니다.");
-            isCorrectPassword.current = false;
+            setCorrectPassword(false);
             
         } else {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#0040FF");
             setPasswordHelperText("*사용가능한 비밀번호입니다.");
-            isCorrectPassword.current = true; 
+            setCorrectPassword(true);
         }
     
         validateAll();
     }
-    
-    const validatePasswordFormat = (password) => {
-        const passwordRegax = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
-        return passwordRegax.test(password);
-    }
 
-    const validateRePasswordInput = (e) => {
-        rePassword.current = e.target.value;
-        const rePasswordCurrentValue = rePassword.current;
-    
+
+    const validateRePasswordInput = (newValue) => {
+        setRepassword(newValue);
+        const rePasswordCurrentValue = getRepassword();
     
         if (!rePasswordCurrentValue) {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호를 한번 더 입력해주세요");
-            isCorrectRePassword.current = false;
+            setCorrectRePassword(false);
     
-        } else if(!validatePasswordDouble(rePasswordCurrentValue)) {
+        } else if(!utility.validatePasswordDouble(getPassword(), getRepassword())) {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호가 다릅니다.");
-            isCorrectRePassword.current = false;
+            setCorrectRePassword(false);
             
         } else {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#0040FF");
             setRePasswordHelperText("*비밀번호가 일치합니다.");
-            isCorrectRePassword.current = true; 
+            setCorrectRePassword(true);
         }
     
         validateAll();
     }
 
-    const validatePasswordDouble = (rePasswordCurrentValue) => {
-        return password.current === rePasswordCurrentValue;
-    }
 
-    const validateNicknameInput = async (e) => {
-        nickname.current = e.target.value;
-        const nicknameCurrentValue = nickname.current;
+    const validateNicknameInput = async (newValue) => {
+        setNickname(newValue);
+        const nicknameCurrentValue = getNickname();
 
         if (!nicknameCurrentValue) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임을 입력해주세요.");
-            isCorrectNickname.current = false;   
+            setCorrectNickname(false);
     
         } else if (nicknameCurrentValue.search(/\s/) != -1) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*띄어쓰기를 없애주세요.");
-            isCorrectNickname.current = false;   
-    
+            setCorrectNickname(false);
     
         } else if (nicknameCurrentValue.length > 11) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임은 최대 10자 까지 작성 가능합니다.");
-            isCorrectNickname.current = false;   
+            setCorrectNickname(false);
     
-        } else {
-            const flag = {'flag' : false};
-                
-            await validateDuplicateNickname(nicknameCurrentValue, flag);
-            console.log(`닉네임 중복 검사결과: ${flag['flag']}`);
-
-            if (flag['flag']) {
-                setNicknameHelperTextVisibility('visible');
-                setNicknameHelperTextColor("#0040FF");
-                setNicknameHelperText("*사용가능한 닉네임입니다.");
-                isCorrectNickname.current = true;
-        
-            } else {
-                setNicknameHelperTextVisibility('visible');
-                setNicknameHelperTextColor("#FF0000");
-                setNicknameHelperText("*중복된 닉네임 입니다.");
-                isCorrectNickname.current = false;
-            }
+        } else {     
+            await validateDuplicateNickname();
+            
         }
         
         validateAll();
     }
 
-    const validateDuplicateNickname = async (nickname, flag) => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${nickname}`)
-            .then(isDuplicated => isDuplicated.json())
-            .then(isDuplicatedJson => {
-                if(isDuplicatedJson.result === "true") {
-                    flag['flag'] = true;
-                }
-           });
+    const validateDuplicateNickname = async () => {
+        const data = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        }
+
+        await fetchNicknameDuplicateResult(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${getNickname()}`, data);
     }
 
     const validateAll = () => {
-        if (isCorrectEmail.current && isCorrectPassword.current && isCorrectRePassword.current && isCorrectNickname.current) {
+        if (isCorrectEmail() && isCorrectPassword() && isCorrectRePassword() && isCorrectNickname()) {
             setSignUpBtnColor('#7F6AEE');
             setSignUpBtnDisabled(false);
         } else {
@@ -265,9 +299,9 @@ const SignUp = () => {
 
     const signUp = async () => {
         const obj = {
-            email : `${email.current}`,
-            password: `${password.current}`,
-            nickname: `${nickname.current}`,
+            email : `${getEmail()}`,
+            password: `${getPassword()}`,
+            nickname: `${getNickname()}`,
             profileImage: `${profileImage}`
         }
             
@@ -278,21 +312,8 @@ const SignUp = () => {
             },
             body: JSON.stringify(obj)
         }
-    
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users`, data)
-            .then(response => {
-            if (response.status === 201) {
-                alert('회원가입이 완료되었습니다!');
-                navigate('/users/sign-in');
-            } else {
-                alert('회원가입에 실패하였습니다!');
-                navigate('/users/sign-up');
-                
-            }
-          })
-          .catch(error => {
-            console.error('sign-up fetch error:', error);
-          });
+        
+        await fetchSignUpResult(`${serverAddress.BACKEND_IP_PORT}/users`, data);
     }
     
 
@@ -302,7 +323,7 @@ const SignUp = () => {
             <Header
                 backBtnVisibility="visible" 
                 profileImageVisibility="hidden" 
-                navigateToPreviousPage={navigateToPreviousPage}>
+                navigateToPreviousPage={navigator.navigateToSignIn}>
             </Header>
 
             <VerticalPadding marginTop="10.9vh"></VerticalPadding>
@@ -362,10 +383,12 @@ const SignUp = () => {
                     id="sign-up-btn" 
                     disabled={signUpBtnDisabled}
                     style={{backgroundColor: signUpBtnColor}}
-                    onClick={signUp}>회원가입</button>
+                    onClick={signUp}>
+                        회원가입
+                </button>
             </div>
 
-            <button id="move-sign-in-btn" onClick={navigateToSignIn}>로그인하러 가기</button>
+            <button id="move-sign-in-btn" onClick={navigator.navigateToSignIn}>로그인하러 가기</button>
         </>
     );
   }

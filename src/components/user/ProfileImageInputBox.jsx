@@ -1,6 +1,7 @@
 import React from "react";
-import "./../styles/components/profile-image-input-box.css";
-import HelperText from "./HelperText";
+
+import HelperText from "../common/HelperText";
+import "../../styles/components/user/profile-image-input-box.css";
 
 const ProfileImageInputBox = (props) => {
     const {type, profileHelperTextVisibility, profileHelperText, profileImage, profileOpacity, addImageFunc} = props;

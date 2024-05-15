@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import "./../styles/components/post-card.css";
+
+import "../../styles/components/post/post-card.css";
+
+
 
 const PostCard = (props) => {
     const {data} = props;
