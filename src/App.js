@@ -13,6 +13,7 @@ import EditPost from "./pages/post/EditPost";
 
 
 function App() {
+
   return (
     <>
       <BrowserRouter>
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route path="/users/sign-in" element={<SignIn />} />
           <Route path="/users/sign-up" element={<SignUp />} />
+
           <Route path="/posts" element={<Posts />} />
           <Route path="/posts/new" element={<AddPost />} />
           <Route path="/posts/:postId" element={<PostDetail />} />

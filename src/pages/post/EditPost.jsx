@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 
+import withAuth from "../../hoc/withAuth";
 import useNavigator from "../../hooks/useNavigator";
 import useRefCapsule from "../../hooks/useRefCapsule";
 import useFetch from "../../hooks/useFetch";
@@ -16,10 +17,10 @@ import "../../styles/pages/post/edit-post.css";
 
 
 
-const EditPost = () => {
+const EditPost = (props) => {
+    const {userId} = props;
     const navigator = useNavigator();
     
-    const {fetchResult: userId, fetchData: fetchUserId} = useFetch();
     const {fetchResult: user, fetchData: fetchUser} = useFetch();
     const {fetchResult: post, fetchData: fetchPost} = useFetch();
     
@@ -39,21 +40,7 @@ const EditPost = () => {
 
 
     useEffect(() => {
-        getUserIdFromSession();
-        
-    }, []);
-
-    useEffect(() => {
-        if (userId == null) {
-            return;
-        }
-
         console.log(`인증 유저 아이디: ${userId}`);
-
-        if (parseInt(userId) === 0) {
-            alert('로그아웃 되었습니다 !');
-            navigator.navigateToSignIn();
-        } 
 
         getUserProfileImageById();
 
@@ -88,9 +75,6 @@ const EditPost = () => {
         document.getElementById("post-image-preview").src = post.image;
     }, [post])
 
-    const getUserIdFromSession = async() => {
-        await fetchUserId(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'});
-    }
 
     const getUserProfileImageById = async () => {
         await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
@@ -232,4 +216,4 @@ const EditPost = () => {
     );
   }
   
-  export default EditPost;
+  export default withAuth(EditPost);

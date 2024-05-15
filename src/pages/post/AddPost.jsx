@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import withAuth from "../../hoc/withAuth";
 import useNavigator from "../../hooks/useNavigator";
 import useRefCapsule from "../../hooks/useRefCapsule";
 import useFetch from "../../hooks/useFetch";
@@ -15,10 +16,10 @@ import "../../styles/pages/post/add-post.css";
 
 
 
-const AddPost = () => {
+const AddPost = (props) => {
+    const {userId} = props;
     const navigator = useNavigator();
 
-    const {fetchResult: userId, fetchData: fetchUserId} = useFetch();
     const {fetchResult: user, fetchData: fetchUser} = useFetch();
     const {fetchResult: addPostResult, fetchData: fetchAddPostResult} = useFetch();
 
@@ -35,21 +36,7 @@ const AddPost = () => {
 
 
     useEffect(() => {
-        getUserIdFromSession();
-        
-    }, []);
-
-    useEffect(() => {
-        if (userId == null) {
-            return;
-        }
-
         console.log(`인증 유저 아이디: ${userId}`);
-
-        if (parseInt(userId) === 0) {
-            alert('로그아웃 되었습니다 !');
-            navigator.navigateToSignIn();
-        } 
 
         getUserProfileImageById();
 
@@ -79,9 +66,6 @@ const AddPost = () => {
     }, [addPostResult]);
 
 
-    const getUserIdFromSession = async() => {
-        await fetchUserId(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'});
-    }
 
     const getUserProfileImageById = async () => {
         await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
@@ -210,4 +194,4 @@ const AddPost = () => {
     );
   }
   
-  export default AddPost;
+  export default withAuth(AddPost);

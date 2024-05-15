@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
+import withAuth from "../../hoc/withAuth";
 import useNavigator from "../../hooks/useNavigator";
 import useRefCapsule from "../../hooks/useRefCapsule";
 import useFetch from "../../hooks/useFetch";
@@ -15,10 +16,10 @@ import "../../styles/pages/user/edit-user.css";
 
 
 
-const EditUser = () => {
+const EditUser = (props) => {
+    const {userId} = props;
     const navigator = useNavigator();
     
-    const {fetchResult: userId, fetchData: fetchUserId} = useFetch();
     const {fetchResult: user, fetchData: fetchUser} = useFetch();
     
     const {get: getNickname, set: setNickname} = useRefCapsule("");
@@ -38,22 +39,10 @@ const EditUser = () => {
 
 
     
-    useEffect(() => {
-        getUserIdFromSession();
         
-    }, []);
-
-    useEffect(() => {
-        if (userId == null) {
-            return;
-        }
-
+    useEffect(() => {    
+        document.body.style.overflow = 'hidden';
         console.log(`인증 유저 아이디: ${userId}`);
-
-        if (parseInt(userId) === 0) {
-            alert('로그아웃 되었습니다 !');
-            navigator.navigateToSignIn();
-        } 
 
         getUserProfileImageById();
 
@@ -71,9 +60,6 @@ const EditUser = () => {
         document.getElementById("nickname-input").value = user.nickname;
     }, [user])
 
-    const getUserIdFromSession = async() => {
-        await fetchUserId(`${serverAddress.BACKEND_IP_PORT}/users/session`, {credentials: 'include'});
-    }
 
     const getUserProfileImageById = async () => {
         await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
@@ -276,4 +262,4 @@ const EditUser = () => {
     );
   }
   
-  export default EditUser;
+  export default withAuth(EditUser);
