@@ -25,7 +25,7 @@ const SignIn = () => {
 
     const [signInHelperTextvisibility, setSignInHelperTextVisibility] = useState('hidden')
     const [signInHelperText, setSignInHelperText] = useState("*helper text");
-    
+
     const [signInBtnColor, setSignInBtnColor] = useState('#8fce92');
     const [signInBtnDisabled, setSignInBtnDisabled] = useState(false);
 
@@ -36,7 +36,7 @@ const SignIn = () => {
             return;
         }
         
-        if (signInResult === 'true') {
+        if (signInResult === true) {
             setSignInBtnColor('#409344');
             setSignInHelperTextVisibility('hidden');
             setSignInBtnDisabled(true);
