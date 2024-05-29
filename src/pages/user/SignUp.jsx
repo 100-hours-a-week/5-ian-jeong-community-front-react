@@ -61,11 +61,10 @@ const SignUp = () => {
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
 
-    const [signUpBtnColor, setSignUpBtnColor] = useState('#ACA0EB');
+    const [signUpBtnColor, setSignUpBtnColor] = useState('#8fce92');
     const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(true);
 
-    // 이후에 커스텀 훅으로 빼자
-    // 내부 로직은 callback 함수로 전달하면 될듯
+    
     useEffect(() => {
         if (emailDuplicateResult == null) {
             return;
@@ -74,7 +73,7 @@ const SignUp = () => {
         console.log(`이메일 중복 검사결과: ${emailDuplicateResult}`);
 
     
-        if (emailDuplicateResult === 'true') {
+        if (emailDuplicateResult === true) {
             setEmailHelperTextVisibility('visible');
             setEmailHelperTextColor('#0040FF');
             setEmailHelperText('*사용가능한 이메일입니다.');
@@ -97,7 +96,7 @@ const SignUp = () => {
         }
         console.log(`닉네임 중복 검사결과: ${nicknameDuplicateResult}`);
 
-        if (nicknameDuplicateResult === 'true') {
+        if (nicknameDuplicateResult === true) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#0040FF");
             setNicknameHelperText("*사용가능한 닉네임입니다.");
@@ -135,6 +134,7 @@ const SignUp = () => {
 
     const addImage = (event) => {
         const file = event.target.files[0];
+        setProfileImage("");
         
         if (file) {
             const reader = new FileReader();
@@ -151,12 +151,10 @@ const SignUp = () => {
         } 
         
         setProfileOpacity(1);
-        setProfileImage("");
         setProfileHelperTextVisibility("visible");
     }
     
     const validateEmailInput = async (value) => {
-        console.log(value);
         setEmail(value);
         const emailCurrentValue = getEmail();
     
@@ -289,20 +287,20 @@ const SignUp = () => {
 
     const validateAll = () => {
         if (isCorrectEmail() && isCorrectPassword() && isCorrectRePassword() && isCorrectNickname()) {
-            setSignUpBtnColor('#7F6AEE');
+            setSignUpBtnColor('#409344');
             setSignUpBtnDisabled(false);
         } else {
-            setSignUpBtnColor('#ACA0EB');
+            setSignUpBtnColor('#8fce92');
             setSignUpBtnDisabled(true);
         }
     }
 
     const signUp = async () => {
         const obj = {
-            email : `${getEmail()}`,
-            password: `${getPassword()}`,
-            nickname: `${getNickname()}`,
-            profileImage: `${profileImage}`
+            email : getEmail(),
+            password: getPassword(),
+            nickname: getNickname(),
+            image: profileImage
         }
             
         const data = {
@@ -327,7 +325,7 @@ const SignUp = () => {
             </Header>
 
             <VerticalPadding marginTop="10.9vh"></VerticalPadding>
-            <PageTitle text="회원가입" fontSize="32px"></PageTitle>
+            <PageTitle text="회원가입" fontSize="52px"></PageTitle>
 
             <div id="sign-up-input-box">
                 <ProfileImageInputBox 
