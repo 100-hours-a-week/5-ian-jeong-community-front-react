@@ -1,7 +1,15 @@
+
 var sparks = 75; // how many sparks per clicksplosion
 var speed = 33; // how fast - smaller is faster
 var bangs = 5; // how many can be launched simultaneously (note that using too many can slow the script down)
 var colours = ['#03f', '#0e0', '#0cf', '#f93']; // blue, green, purple, cyan
+
+/****************************
+    *   Clicksplosion Effect    *
+    *(c)2012-3 mf2fm web-design *
+    *  http://www.mf2fm.com/rv  *
+    * DON'T EDIT BELOW THIS BOX *
+    ****************************/
 
 var intensity = [];
 var Xpos = [];

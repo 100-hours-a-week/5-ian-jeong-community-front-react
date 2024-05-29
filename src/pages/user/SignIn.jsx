@@ -10,6 +10,7 @@ import PageTitle from "../../components/common/PageTitle";
 import VerticalPadding from "../../components/common/VerticlaPadding";
 import HelperText from "../../components/common/HelperText";
 import TextInput from "../../components/user/TextInput";
+import clicksplode from "../../utils/fireworks"
 
 import "../../styles/pages/user/sign-in.css";
 
@@ -24,29 +25,24 @@ const SignIn = () => {
 
     const [signInHelperTextvisibility, setSignInHelperTextVisibility] = useState('hidden')
     const [signInHelperText, setSignInHelperText] = useState("*helper text");
-
-    const [signInBtnColor, setSignInBtnColor] = useState('#ACA0EB');
+    
+    const [signInBtnColor, setSignInBtnColor] = useState('#8fce92');
     const [signInBtnDisabled, setSignInBtnDisabled] = useState(false);
 
     useEffect((() => {
-        /* 
-        useEffect를 사용하지 않으면 아래 set함수 때문에 
-        signInResult의 set이 다른 set들이 다 호출될때까지 호출이 되지 않아서
-        최신화가 안되기 때문에 useEffect의 실행 조건에 signInResult값 수정을 넣어주고 돌려줘야 함
-        */
-
+        clicksplode();
         console.log(`게정 검증결과: ${signInResult}`);
         if (signInResult == null) {
             return;
         }
         
         if (signInResult === 'true') {
-            setSignInBtnColor('#7F6AEE');
+            setSignInBtnColor('#409344');
             setSignInHelperTextVisibility('hidden');
             setSignInBtnDisabled(true);
 
             setTimeout(() => {
-                setSignInBtnColor('#ACA0EB');
+                setSignInBtnColor('#8fce92');
                 setSignInBtnDisabled(false);
                 navigator.navigateToPosts();
             }, 3000);        
@@ -107,7 +103,9 @@ const SignIn = () => {
         <>
             <Header backBtnVisibility="hidden" profileImageVisibility="hidden"></Header>
             <VerticalPadding marginTop="24.66vh"></VerticalPadding>
-            <PageTitle text="로그인" fontSize="32px"></PageTitle>
+            <PageTitle text="Welcome !" fontSize="52px"></PageTitle>
+
+            <div id="sign-in-shadow-box"></div>
 
             <div id="sign-in-input-box">
                 <TextInput type="email" validateInput={setEmail}></TextInput>

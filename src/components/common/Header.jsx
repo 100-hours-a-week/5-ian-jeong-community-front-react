@@ -30,7 +30,7 @@ const Header = (props) => {
     return (
         <>
             <header>
-                <div id="header-title-text">아무 말 대잔치</div>
+                <div id="header-title-text">One Day One Post</div>
                 <div id="header-box">
 
                     <img 
