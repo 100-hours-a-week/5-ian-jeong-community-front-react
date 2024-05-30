@@ -14,14 +14,14 @@
 
 #modal-text1 {
     font-weight: 700;
-    font-size: 24px;
+    font-size: 34px;
     line-height: 28.64px;
     margin-top: 48px;
 }
 
 #modal-text2 {
     font-weight: 400;
-    font-size: 20px;
+    font-size: 30px;
     line-height: 23.87px;
     margin-top: 24px;
 }
@@ -51,7 +51,7 @@
 .modal-delete {
     width: 127px;
     height: 44px;
-    background-color: #C4A5FA;
+    background-color: #409344;
     color: #000000;
     font-weight: 400;
     font-size: 20px;

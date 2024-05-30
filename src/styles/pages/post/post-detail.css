@@ -9,7 +9,7 @@
 
 #post-detail-title {
     font-weight: 700;
-    font-size: 24px;
+    font-size: 34px;
     line-height: 31.2px;
     margin-left: 24px;
 }
@@ -32,13 +32,13 @@
 
 #post-detail-writer {
     margin-left: 10px;
-    font-size: 15px;
+    font-size: 25px;
     font-weight: 700;
     line-height: 19.5px;
 }
 
 #post-detail-time {
-    font-size: 14px;
+    font-size: 24px;
     line-height: 18.2px;
     margin-left: 24px;
 }
@@ -89,7 +89,7 @@
 
 #post-detail-content {
     font-weight: 400;
-    font-size: 15px;
+    font-size: 25px;
     width: 533px;
     line-height: 21.15px;
     white-space: pre-wrap;
@@ -135,13 +135,13 @@
 
 .num {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 30px;
     line-height: 26px;
 }
 
 .text1 {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 26px;
     line-height: 25.04px;
 }
 
@@ -149,7 +149,7 @@
     width: 28px;
     height: 25px;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 26px;
     line-height: 25.04px;
 }
 
@@ -193,7 +193,7 @@
 #add-comment-btn {
     width: 139px;
     height: 39px;
-    background-color: #ACA0EB;
+    background-color: #8fce92;
     border-radius: 16px;
     border: none;
     color: white;
@@ -209,7 +209,7 @@
 #edit-comment-btn {
     width: 139px;
     height: 39px;
-    background-color: #ACA0EB;
+    background-color: #8fce92;
     border-radius: 16px;
     border: none;
     color: white;

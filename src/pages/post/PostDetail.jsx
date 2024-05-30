@@ -17,18 +17,15 @@ const PostDetail = (props) => {
     const navigator = useNavigator();
 
     const {fetchResult: user, fetchData: fetchUser} = useFetch();
-    const {fetchResult: post, fetchData: fetchPost} = useFetch();
     const {fetchResult: postWriter, fetchData: fetchPostWriter} = useFetch();
-    const {fetchResult: updateHitsResult, fetchData: fetchUpdateHitsResult} = useFetch();
-    const {fetchResult: postCommments, fetchData: fetchPostComments} = useFetch();
     
     const { postId } = useParams();
     const commentInput = useRef("");
     const clickComment = useRef(0);
-
+    
     const [userProfileImage, setUserProfileImage] = useState("");
     const [modalVisibility, setModalVisibility] = useState('hidden');
-    const [addCommnetBtnColor, setAddCommentBtnColor] = useState('#ACA0EB');
+    const [addCommnetBtnColor, setAddCommentBtnColor] = useState('#8fce92');
     const [addCommentBtnDisabled, setAddCommentBtnDisabled] = useState(true)
     const [modalType, setModalType] = useState('게시글');
     const [addCommentBtnText, setAddCommentBtnText] = useState('댓글 등록');
@@ -40,9 +37,10 @@ const PostDetail = (props) => {
     const [postDetailTime, setPostDetailTime] = useState("");
     const [postDetailImage, setPostDetailImage] = useState("");
     const [postDetailContent, setPostDetailContent] = useState("");
-    const [postDetailHits, setPostDetailHits] = useState(0);
     const [postDetailCommentNum, setPostDetailCommentNum] = useState(0);
+    const [postDetailHits, setPostDetailHits] = useState(0);
     const [comments, setComments] = useState([]);
+    const [result, setResult] = useState(null); // 여기에 게시글 댓글 모두 가져옴
 
 
     
@@ -52,7 +50,6 @@ const PostDetail = (props) => {
 
         getUserProfileImageById();
         getPost();
-        getComments();
     }, [userId]);
 
     useEffect(() => {
@@ -60,35 +57,57 @@ const PostDetail = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
 
     }, [user])
 
     useEffect(() => {
-        if (post == null) {
+        if (result == null) {
             return;
         }
 
-        setPostDetailTitle(post.title);
-        console.log(userId);
-        console.log(post.writer);
-        if (parseInt(userId) != parseInt(post.writer)) {
+        setPostDetailTitle(result.post.title);
+
+        if (parseInt(userId) != parseInt(result.post.user_id)) {
             setPostDetailEditBtnVisibility('hidden');
             setPostDetailDeleteBtnVisibility('hidden');
         }
 
-        setPostDetailTime(post.time)
-        setPostDetailImage(post.image);
-        setPostDetailContent(post.content);
+        setPostDetailTime(result.post.created_at)
+        setPostDetailImage(result.post.image);
+        setPostDetailContent(result.post.content);
 
-        const newHits = post.hits + 1;
-        setPostDetailHits(newHits); // 바로 업데이트 안됨, 다음 렌더링 사이클에서 한꺼번에 됨
-        const commentNum = parseInt(post.comments);
+        const commentNum = parseInt(result.post.comment_count);
         setPostDetailCommentNum(commentNum);
+        setPostDetailHits(result.post.view_count);
          
         getPostWriter();
-        updateHits();
-    }, [post])
+
+    
+        setComments([]);
+
+        result.comments.forEach(async (comment) => {
+            const commentData = {
+                id: comment.id,
+                time: comment.created_at,
+                text: comment.content,
+            }
+        
+            await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${comment.user_id}`)
+                .then(userData => userData.json())
+                .then(userJson => {
+                    if (parseInt(userJson.result.id) !== parseInt(userId)) {
+                        commentData.editBtnVisibility = 'hidden';
+                        commentData.deleteBtnVisibility = 'hidden';
+                    }
+                
+                    commentData.profileImage = userJson.result.image;
+                    commentData.nickname = userJson.result.nickname;
+                });
+            
+            setComments(prevComments => [...prevComments, commentData]);
+        })
+    }, [result])
 
 
     useEffect(() => {
@@ -97,47 +116,9 @@ const PostDetail = (props) => {
         }
 
         setWriter(postWriter.nickname);
-        setWriterProfileImage(postWriter.profileImage);
+        setWriterProfileImage(postWriter.image);
 
     }, [postWriter])
-
-    useEffect(() => {
-        if (updateHitsResult === 204) {
-            console.log('조회수 업데이트 성공');
-        } else {
-            console.log('조회수 업데이트 실패');
-        }
-    }, [updateHitsResult]);
-
-    useEffect(() => {
-        if (postCommments == null) {
-            return;
-        }
-
-        setComments([]);
-
-        postCommments.forEach(async (comment) => {
-            const commentData = {
-                id: comment.id,
-                time: comment.time,
-                text: comment.text,
-            }
-        
-            await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${comment.writer}`)
-                .then(userData => userData.json())
-                .then(userJson => {
-                    if (parseInt(userJson.result.id) !== parseInt(userId)) {
-                        commentData.editBtnVisibility = 'hidden';
-                        commentData.deleteBtnVisibility = 'hidden';
-                    }
-                
-                    commentData.profileImage = userJson.result.profileImage;
-                    commentData.nickname = userJson.result.nickname;
-                });
-            
-            setComments(prevComments => [...prevComments, commentData]);
-        })
-    }, [postCommments]);
 
 
     const getUserProfileImageById = async () => {
@@ -145,38 +126,16 @@ const PostDetail = (props) => {
     }
 
     const getPost = async () => {
-        await fetchPost(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, {mehtod: 'GET'});
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`)
+                .then(postData => postData.json())
+                .then(postJson => {
+                    setResult(postJson);
+                });
     }
 
     const getPostWriter = async () => {
-        await fetchPostWriter(`${serverAddress.BACKEND_IP_PORT}/users/${post.writer}`, {mehtod: 'GET'});
+        await fetchPostWriter(`${serverAddress.BACKEND_IP_PORT}/users/${result.post.user_id}`, {mehtod: 'GET'});
     }
-
-    const getComments = async () => {
-        await fetchPostComments(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}/comments`, {mehtod: 'GET'});
-    }
-
-    const updateHits = async () => {
-        const obj = {
-            title: post.title,
-            content: post.content,
-            imageName: post.imageName,
-            image: post.image,
-            hits: post.hits + 1,
-        }
-                    
-        const data = {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-                body: JSON.stringify(obj)
-        }
-
-        await fetchUpdateHitsResult(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, data);
-    }
-
-
     
 
 
@@ -213,7 +172,6 @@ const PostDetail = (props) => {
             setModalVisibility('hidden');
             document.body.style.overflow = 'auto';
             setPostDetailCommentNum(postDetailCommentNum - 1);
-            await getComments();
         }
     }
 
@@ -221,20 +179,20 @@ const PostDetail = (props) => {
         commentInput.current = e.target.value;
 
         if (commentInput.current) {
-            setAddCommentBtnColor('#7F6AEE');
+            setAddCommentBtnColor('#409344');
             setAddCommentBtnDisabled(false);
 
             return;
         }
 
         setAddCommentBtnDisabled(true);
-        setAddCommentBtnColor('#ACA0EB');
+        setAddCommentBtnColor('#8fce92');
     }
 
     const editCommentMode = (comment, commentId) => {
         clickComment.current = commentId;
         setAddCommentBtnText("댓글 수정");
-        setAddCommentBtnColor('#7F6AEE');
+        setAddCommentBtnColor('#409344');
         setAddCommentBtnDisabled(false);
         document.getElementById("comment-input").value=comment;
         commentInput.current = comment;
@@ -272,7 +230,6 @@ const PostDetail = (props) => {
                         alert('댓글 작성 실패!');
                     }
                     setPostDetailCommentNum(postDetailCommentNum + 1);
-                    await getComments();
                 })
                 .catch(error => {
                     console.error('add comment fetch error:', error);
@@ -301,7 +258,6 @@ const PostDetail = (props) => {
                         alert('댓글 수정 실패!');
                     }
                     
-                    await getComments();
                 })
                 .catch(error => {
                     console.error('comment update fetch error:', error);
@@ -360,13 +316,13 @@ const PostDetail = (props) => {
 
             <div id="count-box">
                 <div id="post-detail-hits">
-                    <div className="num" id="hits-num"></div>
-                    <div className="text1">조회수</div>{postDetailHits}
+                    <div className="num" id="hits-num">{postDetailHits}</div>
+                    <div className="text1">조회수</div>
                 </div>
 
                 <div id="post-detail-coments">
-                    <div className="num" id="comments-num"></div>
-                    <div className="text2">댓글</div>{postDetailCommentNum}
+                    <div className="num" id="comments-num">{postDetailCommentNum}</div>
+                    <div className="text2">댓글</div>
                 </div>
             </div>
 
@@ -384,7 +340,7 @@ const PostDetail = (props) => {
                     id="add-comment-btn" 
                     disabled={addCommentBtnDisabled}
                     style={{backgroundColor: addCommnetBtnColor}}
-                    onClick={addComment} // 댓글아이디 어케넣지
+                    onClick={addComment}
                     >
                     {addCommentBtnText}
                 </button>
