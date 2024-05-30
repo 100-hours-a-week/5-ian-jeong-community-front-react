@@ -22,20 +22,19 @@ const EditPost = (props) => {
     const navigator = useNavigator();
     
     const {fetchResult: user, fetchData: fetchUser} = useFetch();
-    const {fetchResult: post, fetchData: fetchPost} = useFetch();
     
     const { postId } = useParams();
 
     const {get: getTitle, set: setTitle} = useRefCapsule("");
     const {get: getContent, set: setContent} = useRefCapsule("");
-    const {get: getHits, set: setHits} = useRefCapsule("");
     const {get: getPostImageInput, set: setPostImageInput} = useRefCapsule("");
 
     const [userProfileImage, setUserProfileImage] = useState("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
-    const [editCompleteBtnColor, setEditCompleteBtnColor] = useState('#ACA0EB');
+    const [editCompleteBtnColor, setEditCompleteBtnColor] = useState('#409344');
     const [postImageInputName, setPostImageInputName] = useState("");
+    const [result, setResult] = useState(null); 
 
 
 
@@ -51,29 +50,28 @@ const EditPost = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
 
         getPost();
 
     }, [user])
 
     useEffect(() => {
-        if (post == null) {
+        if (result == null) {
             return;
         }
 
 
         
-        setTitle(post.title);
-        setContent(post.content);
-        setHits(post.hits);
-        setPostImageInputName(post.imageName);
-        setEditCompleteBtnColor('#7F6AEE');
+        setTitle(result.post.title);
+        setContent(result.post.content);
+        setPostImageInputName(result.post.imageName);
+        setEditCompleteBtnColor('#409344');
 
-        document.getElementById("title-input").value = post.title;
-        document.getElementById("content-input").value = post.content;
-        document.getElementById("post-image-preview").src = post.image;
-    }, [post])
+        document.getElementById("title-input").value = result.post.title;
+        document.getElementById("content-input").value = result.post.content;
+        document.getElementById("post-image-preview").src = result.post.image;
+    }, [result])
 
 
     const getUserProfileImageById = async () => {
@@ -82,7 +80,11 @@ const EditPost = (props) => {
 
     
     const getPost = async () => {
-        await fetchPost(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`, {method: 'GET'});
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/posts/${postId}`)
+                .then(postData => postData.json())
+                .then(postJson => {
+                    setResult(postJson);
+                });
     }
 
     const validateTitle = (e) => {
@@ -91,10 +93,10 @@ const EditPost = (props) => {
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setEditCompleteBtnColor('#7F6AEE');
+            setEditCompleteBtnColor('#409344');
             setPostHelperTextVisibility("hidden");
         } else {
-            setEditCompleteBtnColor('#ACA0EB');
+            setEditCompleteBtnColor('#8fce92');
         }
     }
 
@@ -104,10 +106,10 @@ const EditPost = (props) => {
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setEditCompleteBtnColor('#7F6AEE');
+            setEditCompleteBtnColor('#409344');
             setPostHelperTextVisibility("hidden");
         } else {
-            setEditCompleteBtnColor('#ACA0EB');   
+            setEditCompleteBtnColor('#8fce92');   
         }
     }
 
@@ -144,7 +146,6 @@ const EditPost = (props) => {
                 content: getContent(),
                 imageName: postImageInputName,
                 image: getPostImageInput(),
-                hits: getHits(),
             }
                 
             const data = {
@@ -183,7 +184,7 @@ const EditPost = (props) => {
             </Header>
 
             <VerticalPadding marginTop="4.2vh"></VerticalPadding>
-            <PageTitle text="게시글 수정" fontSize="24px"></PageTitle>
+            <PageTitle text="게시글 수정" fontSize="34px"></PageTitle>
             <VerticalPadding marginTop="4.7vh"></VerticalPadding>
 
             <div id="edit-post-box">
