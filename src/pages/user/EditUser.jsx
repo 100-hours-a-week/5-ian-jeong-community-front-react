@@ -35,7 +35,7 @@ const EditUser = (props) => {
     const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 30vh)");
     const [modalVisibility, setModalVisibility] = useState('hidden');
     const [userEditBtnDisabled, setUserEditBtnDisabled] = useState(false);
-    const [userEditBtnColor, setUserEditBtnColor] = useState('#ACA0EB');
+    const [userEditBtnColor, setUserEditBtnColor] = useState('#409344');
 
 
     
@@ -53,8 +53,8 @@ const EditUser = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
-        setProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
+        setProfileImage(user.image);
         setEmail(user.email);
         setNickname(user.nickname);
         document.getElementById("nickname-input").value = user.nickname;
@@ -82,20 +82,22 @@ const EditUser = (props) => {
         setProfileImage("");
     }
 
-    const validateNicknameInput = async (e) => {
-        setNickname(e.target.value);
+    const validateNicknameInput = async (value) => {
+        setNickname(value);
         const nicknameCurrentValue = getNickname();
 
         if (!nicknameCurrentValue) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임을 입력해주세요.");
+            setUserEditBtnColor('#8fce92');
             setCorrectNickname(false);
     
         } else if (nicknameCurrentValue.search(/\s/) != -1) {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*띄어쓰기를 없애주세요.");
+            setUserEditBtnColor('#8fce92');
             setCorrectNickname(false);
     
     
@@ -103,6 +105,7 @@ const EditUser = (props) => {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임은 최대 10자 까지 작성 가능합니다.");
+            setUserEditBtnColor('#8fce92');
             setCorrectNickname(false);
     
         } else {
@@ -134,11 +137,11 @@ const EditUser = (props) => {
     const editUser = async () => {
         if (isCorrectNickname) {
             setUserEditBtnDisabled(true);
-            setUserEditBtnColor('#7F6AEE');
+            setUserEditBtnColor('#409344');
             
             const obj = {
                 nickname : getNickname,
-                profileImage: profileImage,
+                image: profileImage,
             }
                 
             const data = {
@@ -158,13 +161,13 @@ const EditUser = (props) => {
                     if (response.status === 204) {
                         setNicknameHelperTextVisibility('hidden');
                         setUserEditBtnDisabled(false);
-                        setUserEditBtnColor('#ACA0EB');
+                        setUserEditBtnColor('#8fce92');
                         
                     } else {
                         alert('회원정보 수정 실패');
                         setNicknameHelperTextVisibility('hidden');
                         setUserEditBtnDisabled(false);
-                        setUserEditBtnColor('#ACA0EB');
+                        setUserEditBtnColor('#8fce92');
                     }
                     setToastMessageMarginTop("calc(5.9vh + 30vh)");
                     navigator.navigateToEditUser(userId);
@@ -197,7 +200,7 @@ const EditUser = (props) => {
         await fetch(`${serverAddress.BACKEND_IP_PORT}/users/nickname?nickname=${getNickname()}`)
             .then(isDuplicated => isDuplicated.json())
             .then(isDuplicatedJson => {
-                if(isDuplicatedJson.result === "true") {
+                if(isDuplicatedJson.result === true) {
                     flag['flag'] = true;
                 }
            });
@@ -220,7 +223,7 @@ const EditUser = (props) => {
             </Header>
 
             <VerticalPadding marginTop="14.9vh"></VerticalPadding>
-            <PageTitle fontSize="32px" text="회원정보 수정"></PageTitle>
+            <PageTitle fontSize="52px" text="회원정보 수정"></PageTitle>
             <VerticalPadding marginTop="2.1vh"></VerticalPadding>
 
 
