@@ -11,8 +11,6 @@ const Header = (props) => {
     const {backBtnVisibility, profileImageVisibility, navigateToPreviousPage, userId, userProfileImage} = props;
     const [dropBoxVisibility, setDropBoxVisibility] = useState('hidden');
 
-
-
     const showDropBox = () => {
         setDropBoxVisibility('visible');
     }
