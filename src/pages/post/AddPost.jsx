@@ -31,7 +31,7 @@ const AddPost = (props) => {
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
     const [postImageInputName, setPostImageInputName] = useState("");
-    const [completeBtnColor, setCompleteBtnColor] = useState('#ACA0EB');
+    const [completeBtnColor, setCompleteBtnColor] = useState('#8fce92');
 
 
 
@@ -47,7 +47,7 @@ const AddPost = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
 
     }, [user])
 
@@ -78,10 +78,10 @@ const AddPost = (props) => {
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#7F6AEE');
+            setCompleteBtnColor('#409344');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#ACA0EB');
+            setCompleteBtnColor('#8fce92');
         }
     }
 
@@ -91,10 +91,10 @@ const AddPost = (props) => {
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#7F6AEE');
+            setCompleteBtnColor('#409344');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#ACA0EB');   
+            setCompleteBtnColor('#8fce92');   
         }
     }
 
@@ -130,7 +130,7 @@ const AddPost = (props) => {
 
     const addPost = async () => {
         const obj = {
-            writer : userId,
+            userId : userId,
             title: getTitle(),
             content: getContent(),
             imageName: postImageInputName,
@@ -161,7 +161,7 @@ const AddPost = (props) => {
                 userProfileImage={userProfileImage}>
             </Header>
             <VerticalPadding marginTop="4.2vh"></VerticalPadding>
-            <PageTitle text="게시글 작성" fontSize="24px"></PageTitle>
+            <PageTitle text="게시글 작성" fontSize="44px"></PageTitle>
             <VerticalPadding marginTop="4.7vh"></VerticalPadding>
             
             <div id="add-post-box">
