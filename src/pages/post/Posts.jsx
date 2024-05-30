@@ -44,7 +44,7 @@ const Posts = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
 
     }, [user])
 
@@ -57,20 +57,20 @@ const Posts = (props) => {
 
         setPostCards([]);
 
-        posts.reverse().forEach(async(post) => {    
+        posts.forEach(async(post) => {    
             const postData = {
                 id: post.id,
                 title: post.title,
-                likes: utility.makeShortNumber(post.likes),
-                comments: utility.makeShortNumber(post.comments),
-                hits: utility.makeShortNumber(post.hits),
-                time: post.time,
+                likes: utility.makeShortNumber(post.like_count),
+                comments: utility.makeShortNumber(post.comment_count),
+                hits: utility.makeShortNumber(post.view_count),
+                time: post.created_at,
             }
 
-            await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${post.writer}}`)
+            await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${post.user_id}}`)
                 .then(userData => userData.json())
                 .then(userJson => {
-                        postData.profileImage = userJson.result.profileImage;    
+                        postData.image = userJson.result.image;    
                         postData.nickname = userJson.result.nickname;
                     })
 

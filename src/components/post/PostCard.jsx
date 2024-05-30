@@ -32,7 +32,7 @@ const PostCard = (props) => {
                 <hr className="line1"></hr>
 
                 <div className="down-post">
-                    <img src={data.profileImage} alt="Profile Image" className="profile-image"></img>
+                    <img src={data.image} alt="Profile Image" className="profile-image"></img>
                     <div className="writer">{data.nickname}</div>
                 </div>
             </div>

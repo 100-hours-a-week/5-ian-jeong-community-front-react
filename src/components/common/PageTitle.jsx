@@ -9,8 +9,8 @@ const PageTitle = (props) => {
 
     if(flag) {
         return (
-            <div id="welcome-text">안녕하세요,<br/>
-            아무말 대잔치 <strong>게시판</strong> 입니다.
+            <div id="welcome-text">환영합니다,<br/>
+            ODOP <strong>커뮤니티</strong> 입니다.
             </div>
         )
     }
