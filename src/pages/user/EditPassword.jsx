@@ -30,7 +30,7 @@ const EditPassword = (props) => {
     const [userProfileImage, setUserProfileImage] = useState("");
 
     const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 40vh)");
-    const [editPasswordBtnColor, setEditPasswordBtnColor] = useState("##ACA0EB");
+    const [editPasswordBtnColor, setEditPasswordBtnColor] = useState("#8fce92");
     const [editPasswordDisabled, setEditPasswordDisabled] = useState(false);
 
     const [passwordHelperTextVisibility, setPasswordHelperTextVisibility] = useState('hidden');
@@ -56,7 +56,7 @@ const EditPassword = (props) => {
             return;
         }
   
-        setUserProfileImage(user.profileImage);
+        setUserProfileImage(user.image);
     }, [user])
 
     const getUserProfileImageById = async () => {
@@ -76,6 +76,7 @@ const EditPassword = (props) => {
         } else if(!utility.validatePasswordFormat(passwordCurrentValue)) {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#FF0000");
+            setEditPasswordBtnColor("#8fce92");
             setPasswordHelperText("*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포합해야 합니다.");
             setCorrectPassword(false);
             
@@ -96,21 +97,21 @@ const EditPassword = (props) => {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호를 한번 더 입력해주세요");
-            setEditPasswordBtnColor("#ACA0EB");
+            setEditPasswordBtnColor("#8fce92");
             setCorrectRePassword(false);
     
         } else if(!utility.validatePasswordDouble(getPassword(), getRePassword())) {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호가 다릅니다.");
-            setEditPasswordBtnColor("#ACA0EB");
+            setEditPasswordBtnColor("#8fce92");
             setCorrectRePassword(false);
             
         } else {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#0040FF");
             setRePasswordHelperText("*비밀번호가 일치합니다.");
-            setEditPasswordBtnColor("#7F6AEE");
+            setEditPasswordBtnColor("#409344");
             setCorrectRePassword(true);
 
         }
@@ -145,7 +146,7 @@ const EditPassword = (props) => {
 
                         navigator.navigateToEditPassword(userId);
                         setEditPasswordDisabled(false);
-                        setEditPasswordBtnColor('#ACA0EB');
+                        setEditPasswordBtnColor('#8fce92');
                         setPasswordHelperTextVisibility('hidden');
                         setRePasswordHelperTextVisibility('hidden');
                         setToastMessageMarginTop("calc(5.9vh + 40vh)");
@@ -174,7 +175,7 @@ const EditPassword = (props) => {
             </Header>
             
             <VerticalPadding marginTop="14.9vh"></VerticalPadding>
-            <PageTitle text="비밀번호 수정"></PageTitle>
+            <PageTitle text="비밀번호 수정" fontSize="52px"></PageTitle>
             <VerticalPadding marginTop="8.7vh"></VerticalPadding>
 
             <div id="edit-password-box">
