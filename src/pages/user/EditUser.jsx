@@ -32,10 +32,10 @@ const EditUser = (props) => {
     const [nicknameHelperTextVisibility, setNicknameHelperTextVisibility] = useState('hidden');
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
-    const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 30vh)");
+    const [toastMessageOpacity, setToastMessageOpacity] = useState("0");
     const [modalVisibility, setModalVisibility] = useState('hidden');
     const [userEditBtnDisabled, setUserEditBtnDisabled] = useState(false);
-    const [userEditBtnColor, setUserEditBtnColor] = useState('#409344');
+    const [userEditBtnColor, setUserEditBtnColor] = useState('#8a9f8f');
 
 
     
@@ -105,7 +105,7 @@ const EditUser = (props) => {
             setNicknameHelperTextVisibility('visible');
             setNicknameHelperTextColor("#FF0000");
             setNicknameHelperText("*닉네임은 최대 10자 까지 작성 가능합니다.");
-            setUserEditBtnColor('#8fce92');
+            setUserEditBtnColor('#8a9f8f');
             setCorrectNickname(false);
     
         } else {
@@ -122,12 +122,14 @@ const EditUser = (props) => {
                 setNicknameHelperTextVisibility('visible');
                 setNicknameHelperTextColor("#0040FF");
                 setNicknameHelperText("*사용가능한 닉네임입니다.");
+                setUserEditBtnColor('#748578');
                 setCorrectNickname(true);
         
             } else {
                 setNicknameHelperTextVisibility('visible');
                 setNicknameHelperTextColor("#FF0000");
                 setNicknameHelperText("*중복된 닉네임 입니다.");
+                setUserEditBtnColor('#8a9f8f');
                 setCorrectNickname(false);
             }
         }
@@ -137,10 +139,10 @@ const EditUser = (props) => {
     const editUser = async () => {
         if (isCorrectNickname) {
             setUserEditBtnDisabled(true);
-            setUserEditBtnColor('#409344');
+            setUserEditBtnColor('#748578');
             
             const obj = {
-                nickname : getNickname,
+                nickname : getNickname(),
                 image: profileImage,
             }
                 
@@ -158,18 +160,11 @@ const EditUser = (props) => {
                 await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, data)
                     .then(async (response) => {
 
-                    if (response.status === 204) {
-                        setNicknameHelperTextVisibility('hidden');
-                        setUserEditBtnDisabled(false);
-                        setUserEditBtnColor('#8fce92');
-                        
-                    } else {
+                    if (response.status !== 204) {
                         alert('회원정보 수정 실패');
-                        setNicknameHelperTextVisibility('hidden');
-                        setUserEditBtnDisabled(false);
-                        setUserEditBtnColor('#8fce92');
-                    }
-                    setToastMessageMarginTop("calc(5.9vh + 30vh)");
+                    } 
+                
+                    setToastMessageOpacity("0");
                     navigator.navigateToEditUser(userId);
                 })
                 .catch(error => {
@@ -183,7 +178,7 @@ const EditUser = (props) => {
     }
 
     const executeToast = () => {
-        setToastMessageMarginTop("5.9vh");
+        setToastMessageOpacity("1");
     }
 
     const showModal = (e) => {
@@ -207,22 +202,24 @@ const EditUser = (props) => {
     }
 
     const deleteUser = async () => {
-        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'DELETE'});
+        await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'DELETE'})
+        .then(response => {
+            if (response.status === 204) {
+                alert('회원탈퇴 되었습니다 !');
+                window.close(); 
+                window.opener.location.replace('/users/sign-in');
+            } else {
+                alert('회원탈퇴 실패!');
+                window.location.href = `/users/${userId}`;
 
-        alert('회원탈퇴 되었습니다 !');
-        navigator.navigateToSignIn();
+            }
+        });
     }
 
     return (
         <>
-            <Header 
-                backBtnVisibility="visible" 
-                profileImageVisibility="visible"
-                navigateToPreviousPage={navigator.navigateToPosts}
-                userProfileImage={userProfileImage}>
-            </Header>
-
-            <VerticalPadding marginTop="14.9vh"></VerticalPadding>
+        <div id="edit-user-whole">
+            <VerticalPadding marginTop="8.9vh"></VerticalPadding>
             <PageTitle fontSize="52px" text="회원정보 수정"></PageTitle>
             <VerticalPadding marginTop="2.1vh"></VerticalPadding>
 
@@ -253,7 +250,7 @@ const EditUser = (props) => {
 
             </div>
             <button id="user-delete-btn" onClick={showModal}>회원 탈퇴</button>
-            <div id="edit-user-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
+            <div id="edit-user-complete-btn" style={{opacity: toastMessageOpacity}}>수정완료</div>
 
             <Modal
                 type="user-del"
@@ -261,6 +258,7 @@ const EditUser = (props) => {
                 showModal={showModal}
                 deleteModal={deleteUser}
             ></Modal>
+        </div>
         </>
     );
   }

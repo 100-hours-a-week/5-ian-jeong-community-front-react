@@ -28,11 +28,11 @@ const useNavigator = () => {
     };
     
     const navigateToEditUser = (userId) => {
-        navigate(`/users/${userId}`);
+        window.open(`/users/${userId}`, "계정 업데이트", "width=620,height=600,top=0,left=0");
     };
     
     const navigateToEditPassword = (userId) => {
-        navigate(`/users/${userId}/password`);
+        window.open(`/users/${userId}/password`, "비밀번호 수정", "width=620,height=600,top=0,left=0");
     };
 
     return {
