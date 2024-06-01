@@ -12,29 +12,26 @@ html {
 body {
     font-family: 'Dongle';
     width: 100%;
-    height: 100%;
+    height: 100vh;
 
-    padding: 0;
     margin: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    background-color: #F4F5F7;
+    padding: 0;
+    overflow: hidden; 
 }
 
 #root {
     width: 100%;
-
-    padding: 0;
+    height: 100vh;
     margin: 0;
+    padding: 0;
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    background-color: #F4F5F7;
+    background-image : url('../../../assets/forest.jpg');
+    background-size: cover; 
+    
 }
 
 #welcome-padding {

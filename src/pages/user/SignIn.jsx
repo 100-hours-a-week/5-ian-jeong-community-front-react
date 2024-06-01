@@ -5,12 +5,13 @@ import useNavigator from "../../hooks/useNavigator";
 import useRefCapsule from "../../hooks/useRefCapsule";
 import useFetch from "../../hooks/useFetch";
 import serverAddress from "../../constants/serverAddress";
-import Header from "../../components/common/Header";
 import PageTitle from "../../components/common/PageTitle";
 import VerticalPadding from "../../components/common/VerticlaPadding";
 import HelperText from "../../components/common/HelperText";
 import TextInput from "../../components/user/TextInput";
-import clicksplode from "../../utils/fireworks"
+import clicksplode from "../../utils/fireworks";
+import loading from "../../assets/loading.png";
+
 
 import "../../styles/pages/user/sign-in.css";
 
@@ -26,8 +27,11 @@ const SignIn = () => {
     const [signInHelperTextvisibility, setSignInHelperTextVisibility] = useState('hidden')
     const [signInHelperText, setSignInHelperText] = useState("*helper text");
 
-    const [signInBtnColor, setSignInBtnColor] = useState('#8fce92');
+    const [signInBtnColor, setSignInBtnColor] = useState('#8a9f8f');
     const [signInBtnDisabled, setSignInBtnDisabled] = useState(false);
+
+    const [loadingDisplay, setLoadingDisplay] = useState('none');
+    const [loadingBackgroundDisplay, setLoadingBackgroundDisplay] = useState('none');
 
     useEffect((() => {
         clicksplode();
@@ -37,13 +41,18 @@ const SignIn = () => {
         }
         
         if (signInResult === true) {
-            setSignInBtnColor('#409344');
+            setSignInBtnColor('#748578');
             setSignInHelperTextVisibility('hidden');
             setSignInBtnDisabled(true);
+
+            setLoadingDisplay('block');
+            setLoadingBackgroundDisplay('block');
 
             setTimeout(() => {
                 setSignInBtnColor('#8fce92');
                 setSignInBtnDisabled(false);
+                setLoadingDisplay('none');
+                setLoadingBackgroundDisplay('none');
                 navigator.navigateToPosts();
             }, 3000);        
             
@@ -101,27 +110,35 @@ const SignIn = () => {
 
     return (
         <>
-            <Header backBtnVisibility="hidden" profileImageVisibility="hidden"></Header>
-            <VerticalPadding marginTop="24.66vh"></VerticalPadding>
-            <PageTitle text="Welcome !" fontSize="52px"></PageTitle>
 
-            <div id="sign-in-shadow-box"></div>
+        <div id="sign-in-box">
 
             <div id="sign-in-input-box">
+                <PageTitle text="Welcome !" fontSize="52px"></PageTitle>
+                <VerticalPadding marginTop="6.2vh"></VerticalPadding>
                 <TextInput type="email" validateInput={setEmail}></TextInput>
                 <TextInput type="password" validateInput={setPassword}></TextInput>
                 <HelperText visibility={signInHelperTextvisibility} text={signInHelperText} color={"#FF0000"}></HelperText>
+                <button 
+                    id="sign-in-btn" 
+                    onClick={validateSignIn}
+                    style={{backgroundColor: signInBtnColor}}
+                    disabled={signInBtnDisabled}>
+                    로그인
+                </button>
             </div>
 
+            <div id="sign-in-box-right">
+                <div id="sign-in-title">One Day One Post</div>
+                <div id="sign-in-text">꾸준한 포스팅으로 본인의 생각을 정리하고 펼쳐주세요 !</div>
+                <button id="move-sign-up-btn" onClick={navigator.navigateToSignUp}>회원가입</button>
+            </div>
 
-            <button 
-                id="sign-in-btn" 
-                onClick={validateSignIn}
-                style={{backgroundColor: signInBtnColor}}
-                disabled={signInBtnDisabled}>
-                로그인
-            </button>
-            <button id="move-sign-up-btn" onClick={navigator.navigateToSignUp}>회원가입</button>
+        </div>
+
+        <div id="loading-background" style={{display: loadingDisplay}}></div>
+        <img id="loading" src={loading} style={{display: loadingBackgroundDisplay}}></img>
+
         </>
     );
   }

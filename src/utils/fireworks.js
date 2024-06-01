@@ -82,6 +82,11 @@ function bang(N) {
 }
 
 function eksplode(e) { 
+    var target = e.target || e.srcElement;
+    if (target.tagName.toLowerCase() === 'input' || target.tagName.toLowerCase() === 'button' || target.tagName.toLowerCase() === 'textarea') {
+        return;
+    }
+
     var x, y, i, M, Z, N;
     set_scroll();
     y = e.pageY;
