@@ -29,9 +29,9 @@ const EditPassword = (props) => {
 
     const [userProfileImage, setUserProfileImage] = useState("");
 
-    const [toastMessageMarginTop, setToastMessageMarginTop] = useState("calc(5.9vh + 40vh)");
-    const [editPasswordBtnColor, setEditPasswordBtnColor] = useState("#8fce92");
-    const [editPasswordDisabled, setEditPasswordDisabled] = useState(false);
+    const [toastMessageOpacity, setToastMessageOpacity] = useState("0");
+    const [editPasswordBtnColor, setEditPasswordBtnColor] = useState("#8a9f8f");
+    const [editPasswordDisabled, setEditPasswordDisabled] = useState(true);
 
     const [passwordHelperTextVisibility, setPasswordHelperTextVisibility] = useState('hidden');
     const [passwordHelperText, setPasswordHelperText] = useState('*helper text');
@@ -63,20 +63,21 @@ const EditPassword = (props) => {
         await fetchUser(`${serverAddress.BACKEND_IP_PORT}/users/${userId}`, {method: 'GET'})
     }
 
-    const validatePasswordInput = (e) => {
-        setPassword(e.target.value);
+    const validatePasswordInput = (value) => {
+        setPassword(value);
         const passwordCurrentValue = getPassword();
     
         if (!passwordCurrentValue) {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#FF0000");
+            setEditPasswordBtnColor("#8a9f8f");
             setPasswordHelperText("*비밀번호를 입력해주세요");
             setCorrectPassword(false);
     
         } else if(!utility.validatePasswordFormat(passwordCurrentValue)) {
             setPasswordHelperTextVisibility('visible');
             setPasswordHelperTextColor("#FF0000");
-            setEditPasswordBtnColor("#8fce92");
+            setEditPasswordBtnColor("#8a9f8f");
             setPasswordHelperText("*비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포합해야 합니다.");
             setCorrectPassword(false);
             
@@ -89,29 +90,30 @@ const EditPassword = (props) => {
         }
     }
 
-    const validateRePasswordInput = (e) => {
-        setRePassword(e.target.value);
+    const validateRePasswordInput = (value) => {
+        setRePassword(value);
         const rePasswordCurrentValue = getRePassword();
     
         if (!rePasswordCurrentValue) {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호를 한번 더 입력해주세요");
-            setEditPasswordBtnColor("#8fce92");
+            setEditPasswordBtnColor("#8a9f8f");
             setCorrectRePassword(false);
     
         } else if(!utility.validatePasswordDouble(getPassword(), getRePassword())) {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#FF0000");
             setRePasswordHelperText("*비밀번호가 다릅니다.");
-            setEditPasswordBtnColor("#8fce92");
+            setEditPasswordBtnColor("#8a9f8f");
             setCorrectRePassword(false);
             
         } else {
             setRePasswordHelperTextVisibility('visible');
             setRePasswordHelperTextColor("#0040FF");
             setRePasswordHelperText("*비밀번호가 일치합니다.");
-            setEditPasswordBtnColor("#409344");
+            setEditPasswordBtnColor("#748578");
+            setEditPasswordDisabled(false);
             setCorrectRePassword(true);
 
         }
@@ -120,8 +122,8 @@ const EditPassword = (props) => {
 
 
     const EditPassword = () => {
-        if (isCorrectPassword.current && isCorrectRePassword) {
-            setEditPasswordDisabled(true);
+        if (isCorrectPassword && isCorrectRePassword) {
+            
             executeToast();
 
             setTimeout(async () => {
@@ -139,17 +141,18 @@ const EditPassword = (props) => {
             
                 await fetch(`${serverAddress.BACKEND_IP_PORT}/users/${userId}/password`, data)
                     .then(response => {
-                        if (response.status !== 204) {
+                        if (response.status === 204) {
+                            window.close();
+                        } else {
                             alert('비밀번호 수정 실패');
-                            
+                            navigator.navigateToEditPassword(userId);
                         }
 
-                        navigator.navigateToEditPassword(userId);
-                        setEditPasswordDisabled(false);
-                        setEditPasswordBtnColor('#8fce92');
+                        setEditPasswordDisabled(true);
+                        setEditPasswordBtnColor('#8a9f8f');
                         setPasswordHelperTextVisibility('hidden');
                         setRePasswordHelperTextVisibility('hidden');
-                        setToastMessageMarginTop("calc(5.9vh + 40vh)");
+                        setToastMessageOpacity("0");
                     })
                     .catch(error => {
                         console.error('update password fetch error:', error);
@@ -161,19 +164,15 @@ const EditPassword = (props) => {
     }
 
     const executeToast = () => {
-        setToastMessageMarginTop("5.9vh");
+        setToastMessageOpacity("1");
     }
 
 
     return (
         <>
-            <Header 
-                backBtnVisibility="visible" 
-                profileImageVisibility="visible"
-                navigateToPreviousPage={navigator.navigateToPosts}
-                userProfileImage={userProfileImage}>
-            </Header>
-            
+        
+        <div id="edit-password-whole">
+
             <VerticalPadding marginTop="14.9vh"></VerticalPadding>
             <PageTitle text="비밀번호 수정" fontSize="52px"></PageTitle>
             <VerticalPadding marginTop="8.7vh"></VerticalPadding>
@@ -205,7 +204,8 @@ const EditPassword = (props) => {
                     disabled={editPasswordDisabled}
                     style={{backgroundColor: editPasswordBtnColor}}>수정하기</button>
             </div> 
-                <div id="edit-password-complete-btn" style={{marginTop: toastMessageMarginTop}}>수정완료</div>
+                <div id="edit-password-complete-btn" style={{opacity: toastMessageOpacity}}>수정완료</div>
+        </div>
         </>
     );
   }
