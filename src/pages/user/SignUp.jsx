@@ -61,7 +61,7 @@ const SignUp = () => {
     const [nicknameHelperText, setNicknameHelperText] = useState('*helper text');
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState("#FF0000");
 
-    const [signUpBtnColor, setSignUpBtnColor] = useState('#8fce92');
+    const [signUpBtnColor, setSignUpBtnColor] = useState('#8a9f8f');
     const [signUpBtnDisabled, setSignUpBtnDisabled] = useState(true);
 
     
@@ -120,11 +120,11 @@ const SignUp = () => {
 
         if (signUpResult === 201) {
             alert('회원가입이 완료되었습니다!');
-            navigator.navigateToSignIn();
+            window.close();
 
         } else {
             alert('회원가입에 실패하였습니다!');
-            navigator.navigateToSignUp();
+            window.close();
 
         }
 
@@ -287,10 +287,10 @@ const SignUp = () => {
 
     const validateAll = () => {
         if (isCorrectEmail() && isCorrectPassword() && isCorrectRePassword() && isCorrectNickname()) {
-            setSignUpBtnColor('#409344');
+            setSignUpBtnColor('#748578');
             setSignUpBtnDisabled(false);
         } else {
-            setSignUpBtnColor('#8fce92');
+            setSignUpBtnColor('#8a9f8f');
             setSignUpBtnDisabled(true);
         }
     }
@@ -318,75 +318,79 @@ const SignUp = () => {
 
     return (
         <>
-            <Header
-                backBtnVisibility="visible" 
-                profileImageVisibility="hidden" 
-                navigateToPreviousPage={navigator.navigateToSignIn}>
-            </Header>
 
-            <VerticalPadding marginTop="10.9vh"></VerticalPadding>
-            <PageTitle text="회원가입" fontSize="52px"></PageTitle>
-
-            <div id="sign-up-input-box">
-                <ProfileImageInputBox 
-                    type='new' 
-                    profileHelperTextVisibility={profileHelperTextVisibility} 
-                    profileHelperText={profileHelperText}
-                    profileImage={profileImage}
-                    profileOpacity={profileOpacity}
-                    addImageFunc={addImage}>
-                </ProfileImageInputBox>
-
-                <VerticalPadding marginTop='2.8vh'></VerticalPadding>
-
-                <TextInput type='email' validateInput={validateEmailInput} flag={true}></TextInput>
-                <HelperText
-                    visibility={emailHelperTextVisibility}
-                    text={emailHelperText}
-                    color={emailHelperTextColor}
-                >
-                </HelperText>
+            <div id="sign-up-background">
 
 
+                <VerticalPadding marginTop="10.9vh"></VerticalPadding>
+                <PageTitle text="회원가입" fontSize="52px"></PageTitle>
 
 
-                <TextInput type='password' validateInput={validatePasswordInput} flag={true}></TextInput>
-                <HelperText
-                    visibility={passwordHelperTextVisibility}
-                    text={passwordHelperText}
-                    color={passwordHelperTextColor}
-                >
-                </HelperText>
+                <div id="sign-up-input-box">
+                    <ProfileImageInputBox 
+                        type='new' 
+                        profileHelperTextVisibility={profileHelperTextVisibility} 
+                        profileHelperText={profileHelperText}
+                        profileImage={profileImage}
+                        profileOpacity={profileOpacity}
+                        addImageFunc={addImage}>
+                    </ProfileImageInputBox>
+
+                    <VerticalPadding marginTop='2.8vh'></VerticalPadding>
+
+                    <div className="sign-up-input-label">이메일*</div>
+                    <TextInput type='email' validateInput={validateEmailInput} flag={true}></TextInput>
+                    <HelperText
+                        visibility={emailHelperTextVisibility}
+                        text={emailHelperText}
+                        color={emailHelperTextColor}
+                    >
+                    </HelperText>
 
 
 
-                <TextInput type='repassword' validateInput={validateRePasswordInput} flag={true}></TextInput>
-                <HelperText
-                    visibility={rePasswordHelperTextVisibility}
-                    text={rePasswordHelperText}
-                    color={rePasswordHelperTextColor}
-                >
-                </HelperText>
+                    <div className="sign-up-input-label">비밀번호*</div>
+                    <TextInput type='password' validateInput={validatePasswordInput} flag={true}></TextInput>
+                    <HelperText
+                        visibility={passwordHelperTextVisibility}
+                        text={passwordHelperText}
+                        color={passwordHelperTextColor}
+                    >
+                    </HelperText>
 
-                <TextInput type='nickname' validateInput={validateNicknameInput} flag={true}></TextInput>
-                <HelperText
-                    visibility={nicknameHelperTextVisibility}
-                    text={nicknameHelperText}
-                    color={nicknameHelperTextColor}
-                >
-                </HelperText>
 
-                
-                <button 
-                    id="sign-up-btn" 
-                    disabled={signUpBtnDisabled}
-                    style={{backgroundColor: signUpBtnColor}}
-                    onClick={signUp}>
-                        회원가입
-                </button>
+                    <div className="sign-up-input-label">비밀번호 확인*</div>
+                    <TextInput type='repassword' validateInput={validateRePasswordInput} flag={true}></TextInput>
+                    <HelperText
+                        visibility={rePasswordHelperTextVisibility}
+                        text={rePasswordHelperText}
+                        color={rePasswordHelperTextColor}
+                    >
+                    </HelperText>
+
+
+                    <div className="sign-up-input-label">닉네임*</div>
+                    <TextInput type='nickname' validateInput={validateNicknameInput} flag={true}></TextInput>
+                    <HelperText
+                        visibility={nicknameHelperTextVisibility}
+                        text={nicknameHelperText}
+                        color={nicknameHelperTextColor}
+                    >
+                    </HelperText>
+
+                    
+                </div>
+                    <button 
+                        id="sign-up-btn" 
+                        disabled={signUpBtnDisabled}
+                        style={{backgroundColor: signUpBtnColor}}
+                        onClick={signUp}>
+                            회원가입
+                    </button>
+
+                <button id="move-sign-in-btn" onClick={navigator.navigateToSignIn}>로그인하러 가기</button>
+
             </div>
-
-            <button id="move-sign-in-btn" onClick={navigator.navigateToSignIn}>로그인하러 가기</button>
         </>
     );
   }

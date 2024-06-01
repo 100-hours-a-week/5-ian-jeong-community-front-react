@@ -12,20 +12,23 @@
     align-items: center;
     justify-content: center;
 
-    width: 355px;
+    width: 320px;
+    
 }
 
 
 #profile-image-input {
     width: 149px;
     height: 149px;
-    border-radius: 50%;
+    border-radius: 30%;
     filter: opacity(0%);
     cursor: pointer;
     z-index: 1;
     border: none;
     opacity: 1;
     border:1px solid #000000;
+
+    
 }
 
 
@@ -68,9 +71,11 @@
 #profile-image-preview {
     width: 149px;
     height: 149px;
-    border-radius: 50%;
+    border-radius: 30%;
     position: absolute;
     background-color: #C4C4C4;
+
+    box-shadow: inset 7px 2px 10px #babebc, inset -5px -5px 12px #fff;
 }
 
 

@@ -8,7 +8,7 @@ const useNavigator = () => {
     };
     
     const navigateToSignUp = () => {
-        navigate("/users/sign-up");
+        window.open('/users/sign-up', 'sign-up', "width=620,height=900,top=0,left=0");
     };
     
     const navigateToPosts = () => {

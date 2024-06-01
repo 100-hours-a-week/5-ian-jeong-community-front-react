@@ -119,6 +119,7 @@ const SignIn = () => {
                 <TextInput type="email" validateInput={setEmail}></TextInput>
                 <TextInput type="password" validateInput={setPassword}></TextInput>
                 <HelperText visibility={signInHelperTextvisibility} text={signInHelperText} color={"#FF0000"}></HelperText>
+
                 <button 
                     id="sign-in-btn" 
                     onClick={validateSignIn}
@@ -133,7 +134,7 @@ const SignIn = () => {
                 <div id="sign-in-text">꾸준한 포스팅으로 본인의 생각을 정리하고 펼쳐주세요 !</div>
                 <button id="move-sign-up-btn" onClick={navigator.navigateToSignUp}>회원가입</button>
             </div>
-
+ 
         </div>
 
         <div id="loading-background" style={{display: loadingDisplay}}></div>
