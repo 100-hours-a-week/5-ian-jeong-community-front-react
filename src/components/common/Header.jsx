@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 import useNavigator from "../../hooks/useNavigator";
-import arrow from "../../assets/navi.png";
+import door from "../../assets/open-door.png";
 import "../../styles/components/common/header.css";
 
 
@@ -33,7 +33,7 @@ const Header = (props) => {
 
                     <img 
                         id="back-btn" 
-                        src={arrow} 
+                        src={door} 
                         alt="back" 
                         style={{visibility: backBtnVisibility}} 
                         onClick={navigateToPreviousPage}>

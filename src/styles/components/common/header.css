@@ -6,6 +6,10 @@ header {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+
+    background-color: #8a9f8f;
+
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 #header-box {
@@ -22,11 +26,11 @@ header {
     font-size: 52px;
     line-height: 32px;
     position: absolute;
+    color: white;
 }
 
 #back-btn {
-    width: 16px;
-    height: 19px;
+    width: 40px;
     border: none;
     cursor: pointer;
 

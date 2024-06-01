@@ -27,11 +27,15 @@ const AddPost = (props) => {
     const {get: getContent, set: setContent} = useRefCapsule("");
     const {get: getPostImageInput, set: setPostImageInput} = useRefCapsule("");
 
+    const [previewTitle, setPreviewTitle] = useState("");
+    const [previewContent, setPreviewContent] = useState("");
+    const [previewImage, setPreviewImage] = useState("");
+
     const [userProfileImage, setUserProfileImage] = useState("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
     const [postImageInputName, setPostImageInputName] = useState("");
-    const [completeBtnColor, setCompleteBtnColor] = useState('#8fce92');
+    const [completeBtnColor, setCompleteBtnColor] = useState('#8a9f8f');
 
 
 
@@ -74,27 +78,29 @@ const AddPost = (props) => {
 
     const validateTitle = (e) => {
         setTitle(e.target.value);
+        setPreviewTitle(e.target.value);
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#409344');
+            setCompleteBtnColor('#a3fcb8');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#8fce92');
+            setCompleteBtnColor('#8a9f8f');
         }
     }
 
     const validateContent = (e) => {
         setContent(e.target.value);
+        setPreviewContent(e.target.value);
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setCompleteBtnColor('#409344');
+            setCompleteBtnColor('#a3fcb8');
             setPostHelperTextVisibility("hidden");
         } else {
-            setCompleteBtnColor('#8fce92');   
+            setCompleteBtnColor('#8a9f8f');   
         }
     }
 
@@ -108,13 +114,15 @@ const AddPost = (props) => {
             
             reader.onload = function(e) { 
                 setPostImageInput(e.target.result);
+                setPreviewImage(e.target.result);
                 
             }
             reader.readAsDataURL(file); 
             
             return;
         } 
-        
+
+        setPreviewImage("");
         setPostImageInput("");
     }
     
@@ -160,36 +168,64 @@ const AddPost = (props) => {
                 navigateToPreviousPage={navigator.navigateToPosts}
                 userProfileImage={userProfileImage}>
             </Header>
-            <VerticalPadding marginTop="4.2vh"></VerticalPadding>
-            <PageTitle text="게시글 작성" fontSize="44px"></PageTitle>
-            <VerticalPadding marginTop="4.7vh"></VerticalPadding>
-            
+
+
+
             <div id="add-post-box">
-                <TitleInput validateInput={validateTitle}></TitleInput>                
-                <VerticalPadding marginTop="2.4vh"></VerticalPadding>
-                <ContentInput validateInput={validateContent}></ContentInput>
+                
+                <div id="add-post-form">
+                    <VerticalPadding marginTop="4.2vh"></VerticalPadding>
+                    <PageTitle text="게시글 작성" fontSize="44px"></PageTitle>
+                    <VerticalPadding marginTop="4.7vh"></VerticalPadding>
 
-                <div id="add-post-padding-box">
-                    <HelperText
-                        visibility={postHelperTextVisibility}
-                        text={postHelperText}
-                        color={'#FF0000'}
-                    ></HelperText>
-                    <PostImageInput 
-                        postImageInput={getPostImageInput()}
-                        addImageFunc={addImage}
-                        postImageInputName={postImageInputName}>
-                    </PostImageInput>
+                    <div id="add-post-title-input-box">
+                        <TitleInput validateInput={validateTitle}></TitleInput>                
+                    </div>
+
+                    <VerticalPadding marginTop="2.4vh"></VerticalPadding>
+
+                    <div id="add-post-content-input-box">
+                        <ContentInput validateInput={validateContent}></ContentInput>
+                    </div>
+
+                    <div id="add-post-padding-box">
+                        <HelperText
+                            visibility={postHelperTextVisibility}
+                            text={postHelperText}
+                            color={'#FF0000'}
+                        ></HelperText>
+                        <PostImageInput 
+                            postImageInput={getPostImageInput()}
+                            addImageFunc={addImage}
+                            postImageInputName={postImageInputName}>
+                        </PostImageInput>
+                    </div>
+                    <VerticalPadding marginTop="2.5vh"></VerticalPadding>
+                    <button 
+                        id="complete-btn" 
+                        onClick={validatePost}
+                        style={{backgroundColor: completeBtnColor}}>
+                        완료
+                    </button>
                 </div>
-            </div>
 
-            <VerticalPadding marginTop="2.5vh"></VerticalPadding>
-            <button 
-                id="complete-btn" 
-                onClick={validatePost}
-                style={{backgroundColor: completeBtnColor}}>
-                완료
-            </button>
+                <div id="preview-box">
+
+                    <div id="preview-box-title-box">
+                        <div id="preview-box-title">미리보기</div>
+                    </div>
+
+
+                    <div id="post-preview">
+                        <div id="post-preview-title">{previewTitle}</div> 
+                        <img id="post-preview-image" src={previewImage} alt=" 이미지없음"></img>
+                        <div id="post-preview-content">{previewContent}</div>  
+                    </div>
+
+                </div>
+
+
+            </div>
         </>
     );
   }
