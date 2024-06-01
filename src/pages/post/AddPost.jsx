@@ -35,7 +35,7 @@ const AddPost = (props) => {
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
     const [postImageInputName, setPostImageInputName] = useState("");
-    const [completeBtnColor, setCompleteBtnColor] = useState('#8a9f8f');
+    const [completeBtnColor, setCompleteBtnColor] = useState('#a3fcb8');
 
 
 
@@ -82,6 +82,11 @@ const AddPost = (props) => {
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
 
+        if (titleCurrentValue.length > 26) {
+            setTitle(titleCurrentValue.slice(0, 26));
+            setPreviewTitle(getTitle());
+        }
+
         if (titleCurrentValue && contentCurrentValue) {
             setCompleteBtnColor('#a3fcb8');
             setPostHelperTextVisibility("hidden");
@@ -95,6 +100,7 @@ const AddPost = (props) => {
         setPreviewContent(e.target.value);
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
+
 
         if (titleCurrentValue && contentCurrentValue) {
             setCompleteBtnColor('#a3fcb8');

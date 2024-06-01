@@ -29,10 +29,14 @@ const EditPost = (props) => {
     const {get: getContent, set: setContent} = useRefCapsule("");
     const {get: getPostImageInput, set: setPostImageInput} = useRefCapsule("");
 
+    const [previewTitle, setPreviewTitle] = useState("");
+    const [previewContent, setPreviewContent] = useState("");
+    const [previewImage, setPreviewImage] = useState("");
+
     const [userProfileImage, setUserProfileImage] = useState("");
     const [postHelperTextVisibility, setPostHelperTextVisibility] = useState('hidden');
     const [postHelperText, setPostHelperText] = useState('*helper-text');
-    const [editCompleteBtnColor, setEditCompleteBtnColor] = useState('#409344');
+    const [editCompleteBtnColor, setEditCompleteBtnColor] = useState('#a3fcb8');
     const [postImageInputName, setPostImageInputName] = useState("");
     const [result, setResult] = useState(null); 
 
@@ -71,6 +75,10 @@ const EditPost = (props) => {
         document.getElementById("title-input").value = result.post.title;
         document.getElementById("content-input").value = result.post.content;
         document.getElementById("post-image-preview").src = result.post.image;
+
+        setPreviewTitle(result.post.title);
+        setPreviewContent(result.post.content);
+        setPreviewImage(result.post.image);
     }, [result])
 
 
@@ -89,27 +97,34 @@ const EditPost = (props) => {
 
     const validateTitle = (e) => {
         setTitle(e.target.value);
+        setPreviewTitle(e.target.value);
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
 
+        if (titleCurrentValue.length > 26) {
+            setTitle(titleCurrentValue.slice(0, 26));
+            setPreviewTitle(getTitle());
+        }
+
         if (titleCurrentValue && contentCurrentValue) {
-            setEditCompleteBtnColor('#409344');
+            setEditCompleteBtnColor('#a3fcb8');
             setPostHelperTextVisibility("hidden");
         } else {
-            setEditCompleteBtnColor('#8fce92');
+            setEditCompleteBtnColor('#8a9f8f');
         }
     }
 
     const validateContent = (e) => {
         setContent(e.target.value);
+        setPreviewContent(e.target.value);
         const titleCurrentValue = getTitle();
         const contentCurrentValue = getContent();
 
         if (titleCurrentValue && contentCurrentValue) {
-            setEditCompleteBtnColor('#409344');
+            setEditCompleteBtnColor('#a3fcb8');
             setPostHelperTextVisibility("hidden");
         } else {
-            setEditCompleteBtnColor('#8fce92');   
+            setEditCompleteBtnColor('#8a9f8f');   
         }
     }
 
@@ -123,12 +138,14 @@ const EditPost = (props) => {
             
             reader.onload = function(e) { 
                 setPostImageInput(e.target.result);
+                setPreviewImage(e.target.result);
             }
             reader.readAsDataURL(file); 
             
             return;
         } 
         
+        setPreviewImage("");
         setPostImageInput("");
     }
     
@@ -183,36 +200,59 @@ const EditPost = (props) => {
                 userProfileImage={userProfileImage}>
             </Header>
 
-            <VerticalPadding marginTop="4.2vh"></VerticalPadding>
-            <PageTitle text="게시글 수정" fontSize="34px"></PageTitle>
-            <VerticalPadding marginTop="4.7vh"></VerticalPadding>
-
             <div id="edit-post-box">
-                <TitleInput validateInput={validateTitle}></TitleInput>          
-                <VerticalPadding marginTop="2.4vh"></VerticalPadding>
-                <ContentInput validateInput={validateContent}></ContentInput>
 
-                <div id="edit-post-padding-box">                
-                    <HelperText
-                        visibility={postHelperTextVisibility}
-                        text={postHelperText}
-                        color={'#FF0000'}>
+                <div id="edit-post-form">
+                    <VerticalPadding marginTop="4.2vh"></VerticalPadding>
+                    <PageTitle text="게시글 수정" fontSize="34px"></PageTitle>
+                    <VerticalPadding marginTop="4.7vh"></VerticalPadding>   
 
-                    </HelperText>
-                    <PostImageInput 
-                        postImageInput={getPostImageInput()}
-                        addImageFunc={addImage}
-                        postImageInputName={postImageInputName}>
-                    </PostImageInput>
+                    <div id="edit-post-title-input-box">
+                        <TitleInput validateInput={validateTitle}></TitleInput>          
+                    </div>
+                    <VerticalPadding marginTop="2.4vh"></VerticalPadding>
+
+                    <div id="edit-post-content-input-box">
+                        <ContentInput validateInput={validateContent}></ContentInput>
+                    </div>
+
+                    <div id="edit-post-padding-box">                
+                        <HelperText
+                            visibility={postHelperTextVisibility}
+                            text={postHelperText}
+                            color={'#FF0000'}>
+
+                        </HelperText>
+                        <PostImageInput 
+                            postImageInput={getPostImageInput()}
+                            addImageFunc={addImage}
+                            postImageInputName={postImageInputName}>
+                        </PostImageInput>
+                    </div>
+                    <VerticalPadding marginTop="2.5vh"></VerticalPadding>
+                    <button 
+                        id="edit-post-complete-btn"
+                        onClick={validatePost}
+                        style={{backgroundColor: editCompleteBtnColor}}>
+                        수정하기
+                    </button>
+                </div>  
+
+                <div id="preview-box">
+
+                    <div id="preview-box-title-box">
+                        <div id="preview-box-title">미리보기</div>
+                    </div>
+
+
+                    <div id="post-preview">
+                        <div id="post-preview-title">{previewTitle}</div> 
+                        <img id="post-preview-image" src={previewImage} alt=" 이미지없음"></img>
+                        <div id="post-preview-content">{previewContent}</div>  
+                    </div>
+
                 </div>
-            </div>  
-            <VerticalPadding marginTop="2.5vh"></VerticalPadding>
-            <button 
-                id="edit-post-complete-btn"
-                onClick={validatePost}
-                style={{backgroundColor: editCompleteBtnColor}}>
-                수정하기
-            </button>
+            </div>
         </>
     );
   }
