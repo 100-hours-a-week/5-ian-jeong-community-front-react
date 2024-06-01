@@ -110,35 +110,37 @@ const SignIn = () => {
 
     return (
         <>
+        
+        
+            <div id="sign-in-box">
 
-        <div id="sign-in-box">
+                <div id="sign-in-input-box">
+                    <PageTitle text="Welcome !" fontSize="52px"></PageTitle>
+                    <VerticalPadding marginTop="6.2vh"></VerticalPadding>
+                    <TextInput type="email" validateInput={setEmail}></TextInput>
+                    <TextInput type="password" validateInput={setPassword}></TextInput>
+                    <HelperText visibility={signInHelperTextvisibility} text={signInHelperText} color={"#FF0000"}></HelperText>
 
-            <div id="sign-in-input-box">
-                <PageTitle text="Welcome !" fontSize="52px"></PageTitle>
-                <VerticalPadding marginTop="6.2vh"></VerticalPadding>
-                <TextInput type="email" validateInput={setEmail}></TextInput>
-                <TextInput type="password" validateInput={setPassword}></TextInput>
-                <HelperText visibility={signInHelperTextvisibility} text={signInHelperText} color={"#FF0000"}></HelperText>
+                    <button 
+                        id="sign-in-btn" 
+                        onClick={validateSignIn}
+                        style={{backgroundColor: signInBtnColor}}
+                        disabled={signInBtnDisabled}>
+                        로그인
+                    </button>
+                </div>
 
-                <button 
-                    id="sign-in-btn" 
-                    onClick={validateSignIn}
-                    style={{backgroundColor: signInBtnColor}}
-                    disabled={signInBtnDisabled}>
-                    로그인
-                </button>
+                <div id="sign-in-box-right">
+                    <div id="sign-in-title">One Day One Post</div>
+                    <div id="sign-in-text">꾸준한 포스팅으로 본인의 생각을 정리하고 펼쳐주세요 !</div>
+                    <button id="move-sign-up-btn" onClick={navigator.navigateToSignUp}>회원가입</button>
+                </div>
+    
             </div>
 
-            <div id="sign-in-box-right">
-                <div id="sign-in-title">One Day One Post</div>
-                <div id="sign-in-text">꾸준한 포스팅으로 본인의 생각을 정리하고 펼쳐주세요 !</div>
-                <button id="move-sign-up-btn" onClick={navigator.navigateToSignUp}>회원가입</button>
-            </div>
- 
-        </div>
-
-        <div id="loading-background" style={{display: loadingDisplay}}></div>
-        <img id="loading" src={loading} style={{display: loadingBackgroundDisplay}}></img>
+            <div id="loading-background" style={{display: loadingDisplay}}></div>
+            <img id="loading" src={loading} style={{display: loadingBackgroundDisplay}}></img>
+        
 
         </>
     );
