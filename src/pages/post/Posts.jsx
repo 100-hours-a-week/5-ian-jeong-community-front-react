@@ -24,6 +24,7 @@ const Posts = (props) => {
 
     const [userProfileImage, setUserProfileImage] = useState();
     const [postCards, setPostCards] = useState([]);
+    const [topPostCards, setTopPostCards] = useState([]);
 
 
 
@@ -56,6 +57,8 @@ const Posts = (props) => {
         }
 
         setPostCards([]);
+        setTopPostCards([]);
+        let topPosts = [];
 
         posts.forEach(async(post) => {    
             const postData = {
@@ -74,10 +77,18 @@ const Posts = (props) => {
                         postData.nickname = userJson.result.nickname;
                     })
 
+            if (topPosts.length < 3) {
+                topPosts.push(postData);
+            } else {
+                topPosts = topPosts.sort((a, b) => b.hits - a.hits).slice(0, 3);
+            }
+                    
             setPostCards(prevPostCards => [...prevPostCards, postData]); 
         });
 
 
+
+        setTopPostCards(topPosts);
     }, [posts])
 
 
@@ -98,18 +109,58 @@ const Posts = (props) => {
                 userId={userId}
                 userProfileImage={userProfileImage}>
             </Header>
-            <VerticalPadding marginTop={"3.7vh"}></VerticalPadding>
-            <PageTitle flag={true}></PageTitle>
+            
+            <div id="welcome-text-box">
+                <div id="posts-welcome-text">환영합니다,<br/>
+                    ODOP <strong>커뮤니티</strong> 입니다.
+                </div>
 
-            <div id="add-btn-box">
-                <button id="add-btn" onClick={navigator.navigateToAddPost}>게시글 작성</button>
+                <div id="noti-box">
+                    <div id="noti-text">
+                        📢 공지사항
+                    </div>
+                </div>
             </div>
 
-            {postCards.map(postData => (
-                <PostCard  
-                    data={postData}>
-                </PostCard>
-            ))}
+
+
+
+
+            <div id="posts-box">
+        
+        
+                <div id="left-post-box">
+                    <div id="left-post-box-bar">
+                        <button id="add-btn" onClick={navigator.navigateToAddPost}>게시글 작성</button>
+                    </div>
+
+                    <div id="left-post-box-content"> 
+                        {postCards.map(postData => (
+                            <PostCard  
+                                data={postData}>
+                            </PostCard>
+                        ))}
+                    </div>
+                </div>
+
+
+
+                <div id="right-post-box">
+                    <div id="right-post-box-bar">
+                        <div id="right-post-box-bar-title">🔥 인기 게시글 🔥</div>
+                    </div>
+                    <div id="right-post-box-content">
+                        {topPostCards.map(postData => (
+                            <PostCard  
+                                data={postData}>
+                            </PostCard>
+                        ))}
+
+                    </div>
+                </div>
+            </div>
+
+            
         </>
     );
   }
